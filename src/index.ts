@@ -43,15 +43,15 @@ class Logger {
   }
 
   log(...data: any[]) {
-    this._log('log', data)
+    this._log('log', ...data)
   }
 
   warn(...data: any[]) {
-    this._log('warn', data)
+    this._log('warn', ...data)
   }
 
   error(...data: any[]) {
-    this._log('error', data)
+    this._log('error', ...data)
   }
 
   async req(input: RequestInfo | URL, init?: RequestInit) {

@@ -9,7 +9,7 @@ class Server {
     const result = await fetch(`${this.baseUrl}:${this.port}/${path}`, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json;charset:utf-8'
+        'Content-Type': 'application/json;charset=utf-8'
       },
       body: JSON.stringify(data)
     })
