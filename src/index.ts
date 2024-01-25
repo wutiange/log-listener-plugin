@@ -71,10 +71,11 @@ class Logger {
       ...this.baseData,
       headers: response?.headers,
       body,
-      requestId: id,
+      requestId: Number(id),
       statusCode: response?.status,
       endTime: Date.now(),
       isTimeout,
+      isResponseError: id === undefined || id === null
     })
   }
 }
