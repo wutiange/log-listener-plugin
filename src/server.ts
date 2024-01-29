@@ -6,14 +6,18 @@ class Server {
   }
 
   private async send(path: string, data: Record<string, any>) {
-    const result = await fetch(`${this.baseUrl}:${this.port}/${path}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json;charset=utf-8'
-      },
-      body: JSON.stringify(data)
-    })
-    return result.text()
+    try {
+      const result = await fetch(`${this.baseUrl}:${this.port}/${path}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json;charset=utf-8'
+        },
+        body: JSON.stringify(data)
+      })
+      return result.text()
+    } catch (error) {
+      return null
+    }
   }
 
   updateUrl(url: string) {
