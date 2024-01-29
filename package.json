@@ -1,6 +1,6 @@
 {
   "name": "@wutiange/log-listener-plugin",
-  "version": "0.0.9",
+  "version": "1.0.0",
   "description": "这是log-record的插件，如果需要使用这个日志监听，那么就需要把这个插件安装到项目中",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

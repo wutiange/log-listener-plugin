@@ -69,7 +69,7 @@ class Logger {
     const body = await response.text()
     return this.server.network({
       ...this.baseData,
-      headers: response?.headers,
+      headers: (response?.headers as Record<string, any>)['map'],
       body,
       requestId: Number(id),
       statusCode: response?.status,
