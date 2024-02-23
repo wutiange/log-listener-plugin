@@ -4,7 +4,7 @@ import Server from "./server"
 class Logger {
 
   private server: Server | null = null
-  private baseData: Record<string, any>
+  private baseData: Record<string, any> = {}
 
   setBaseUrl(url: string) {
     if (this.server) {
@@ -14,50 +14,42 @@ class Logger {
     }
   }
 
-  setBaseData(data: Record<string, any>) {
+  setBaseData(data: Record<string, any> = {}) {
     this.baseData = data
   }
 
-  private throwNotSetBaseUrl() {
-    if (!this.server) {
-      throw new Error("请先设置 baseUrl ，用于将数据上传到日志系统中，一般是日志系统打开所在的电脑端口号")
-    }
-  }
-
-  private throwNotSetBaseData() {
-    if (!this.server) {
-      throw new Error("请先设置基础数据，也就是每一条日志都包含的数据")
-    }
-  }
-
-  private _log(level: string, ...data: any[]) {
-    this.throwNotSetBaseUrl()
-    this.throwNotSetBaseData()
+  private _log(level: string, tag: string, ...data: any[]) {
     const sendData = {
       ...this.baseData, 
       message: data, 
+      tag,
       level: level ?? 'log',
       createTime: Date.now()
     }
     this.server.log(sendData)
   }
 
+  tag(tag: string, ...data: any[]) {
+    this._log('log', tag, ...data)
+  }
+
   log(...data: any[]) {
-    this._log('log', ...data)
+    this._log('log', 'default', ...data)
   }
 
   warn(...data: any[]) {
-    this._log('warn', ...data)
+    this._log('warn', 'default', ...data)
   }
 
   error(...data: any[]) {
-    this._log('error', ...data)
+    this._log('error', 'default', ...data)
   }
 
-  async req(input: RequestInfo | URL, init?: RequestInit) {
+  async uniqueReq(uniqueId: string, input: RequestInfo | URL, init?: RequestInit) {
     return this.server.network({
       ...this.baseData,
       url: input,
+      uniqueId,
       method: init?.method ?? "get",
       headers: init?.headers,
       body: init?.body,
@@ -65,7 +57,7 @@ class Logger {
     })
   }
 
-  async res(id: number, response?: Response, isTimeout = false) {
+  private async _res(uniqueId?: string, id?: number, response?: Response, isTimeout = false) {
     const body = await response.text()
     return this.server.network({
       ...this.baseData,
@@ -75,8 +67,21 @@ class Logger {
       statusCode: response?.status,
       endTime: Date.now(),
       isTimeout,
+      uniqueId,
       isResponseError: id === undefined || id === null
     })
+  }
+
+  async uniqueRes(uniqueId: string, response?: Response, isTimeout = false) {
+    return this._res(uniqueId, undefined, response, isTimeout)
+  }
+
+  async req(input: RequestInfo | URL, init?: RequestInit) {
+    return this.uniqueReq(undefined, input, init)
+  }
+
+  async res(id: number, response?: Response, isTimeout = false) {
+    return this._res(undefined, id, response, isTimeout)
   }
 }
 

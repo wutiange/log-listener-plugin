@@ -1,20 +1,30 @@
+import { sleep } from "./utils";
+
 class Server {
   private baseUrl = '';
   private port = 27751
-  constructor(url: string) {
+  private timeout: number;
+  constructor(url: string, timeout: number = 3000) {
     this.updateUrl(url)
+    this.timeout = timeout
   }
 
   private async send(path: string, data: Record<string, any>) {
     try {
-      const result = await fetch(`${this.baseUrl}:${this.port}/${path}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json;charset=utf-8'
-        },
-        body: JSON.stringify(data)
-      })
-      return result.text()
+      const result = await Promise.race([
+        fetch(`${this.baseUrl}:${this.port}/${path}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+          },
+          body: JSON.stringify(data)
+        }),
+        sleep(this.timeout, true)
+      ]) 
+      if (result instanceof Response) {
+        return result.text()
+      }
+      return null
     } catch (error) {
       return null
     }
