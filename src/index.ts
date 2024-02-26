@@ -63,7 +63,7 @@ class Logger {
     return this.server.network({
       ...this.baseData,
       url: input,
-      uniqueId,
+      id: uniqueId,
       method: init?.method ?? "get",
       headers: init?.headers,
       body: init?.body,
@@ -71,17 +71,15 @@ class Logger {
     })
   }
 
-  private async _res(uniqueId?: string, id?: number, response?: Response, isTimeout = false) {
+  private async _res(uniqueId?: string, id?: number, response?: Response) {
     const body = await response.text()
     return this.server.network({
       ...this.baseData,
       headers: (response?.headers as Record<string, any>)['map'],
       body,
-      requestId: Number(id),
+      requestId: uniqueId ?? Number(id),
       statusCode: response?.status,
       endTime: Date.now(),
-      isTimeout,
-      uniqueId,
     })
   }
 
@@ -101,16 +99,16 @@ class Logger {
     }) 
   }
 
-  async uniqueRes(uniqueId: string, response?: Response, isTimeout = false) {
-    return this._res(uniqueId, undefined, response, isTimeout)
+  async uniqueRes(uniqueId: string, response?: Response) {
+    return this._res(uniqueId, undefined, response)
   }
 
   async req(input: RequestInfo | URL, init?: RequestInit) {
     return this.uniqueReq(undefined, input, init)
   }
 
-  async res(id: number, response?: Response, isTimeout = false) {
-    return this._res(undefined, id, response, isTimeout)
+  async res(id: number, response?: Response) {
+    return this._res(undefined, id, response)
   }
 }
 

@@ -21,7 +21,7 @@ global.fetch = async function (input: RequestInfo | URL, init?: RequestInit) {
     const response = await tempFetch(input, init)
     isFetchFinished = true
     if (response instanceof Response) {
-      logger.uniqueRes(uniqueId, response)
+      logger.uniqueRes(uniqueId, response.clone())
     }
     return response
   } catch (error) {
