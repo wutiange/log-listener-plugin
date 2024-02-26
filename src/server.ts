@@ -1,19 +1,29 @@
-import { tempFetch } from "./common";
 import { sleep } from "./utils";
 
 class Server {
   private baseUrl = '';
   private port = 27751
   private timeout: number;
+  private nativeFetch: typeof fetch
+
+
   constructor(url: string, timeout: number = 3000) {
     this.updateUrl(url)
     this.timeout = timeout
   }
 
+  updateTimeout(timeout = 3000) {
+    this.timeout = timeout
+  }
+
+  updateNativeFetch(nativeFetch: typeof fetch) {
+    this.nativeFetch = nativeFetch
+  }
+
   private async send(path: string, data: Record<string, any>) {
     try {
       const result = await Promise.race([
-        tempFetch(`${this.baseUrl}:${this.port}/${path}`, {
+        this.nativeFetch?.(`${this.baseUrl}:${this.port}/${path}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json;charset=utf-8'

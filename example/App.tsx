@@ -14,10 +14,15 @@ const App = () => {
       });
   };
 
+  const logTest = () => {
+    console.log('这是会显示日志');
+  };
+
   return (
     <SafeAreaView>
       <Text>这是文本</Text>
-      <Button title="按钮" onPress={testNetwork} />
+      <Button title="测试网络日志" onPress={testNetwork} />
+      <Button title="测试普通日志" onPress={logTest} />
     </SafeAreaView>
   );
 };
