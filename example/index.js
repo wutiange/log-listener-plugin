@@ -1,6 +1,6 @@
 
 import '@wutiange/log-listener-plugin/dist/console'
-import '@wutiange/log-listener-plugin/dist/fetch'
+// import '@wutiange/log-listener-plugin/dist/fetch'
 import logger from '@wutiange/log-listener-plugin'
 import {AppRegistry} from 'react-native';
 import App from './App';
@@ -11,7 +11,7 @@ async function initLogger() {
   logger.setBaseUrl("http://192.168.118.103")
   logger.setBaseData({
     env: 'debug',
-    version: displayVersion,
+    version: "1.0.0",
     brand: DeviceInfo.getBrand(),
     model: DeviceInfo.getModel(),
     appVersion: DeviceInfo.getVersion(),

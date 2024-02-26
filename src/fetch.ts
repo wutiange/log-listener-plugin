@@ -1,8 +1,7 @@
+import { tempFetch } from './common'
 import logger from './index'
 import { sleep } from './utils'
 
-// @ts-ignore
-const tempFetch = global.fetch as typeof fetch
 
 // @ts-ignore
 global.fetch = async function (input: RequestInfo | URL, init?: RequestInit) {

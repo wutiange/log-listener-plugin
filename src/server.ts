@@ -1,3 +1,4 @@
+import { tempFetch } from "./common";
 import { sleep } from "./utils";
 
 class Server {
@@ -12,7 +13,7 @@ class Server {
   private async send(path: string, data: Record<string, any>) {
     try {
       const result = await Promise.race([
-        fetch(`${this.baseUrl}:${this.port}/${path}`, {
+        tempFetch(`${this.baseUrl}:${this.port}/${path}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json;charset=utf-8'
