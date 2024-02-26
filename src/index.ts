@@ -88,7 +88,7 @@ class Logger {
     return this.server?.network({
       ...this.baseData,
       isTimeout: true,
-      uniqueId,
+      requestId: uniqueId,
     })
   }
 
@@ -96,7 +96,7 @@ class Logger {
     return this.server?.network({
       ...this.baseData,
       isResponseError: true,
-      uniqueId,
+      requestId: uniqueId,
     }) 
   }
 

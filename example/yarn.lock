@@ -2108,10 +2108,10 @@
   resolved "https://registry.yarnpkg.com/@ungap/structured-clone/-/structured-clone-1.2.0.tgz#756641adb587851b5ccb3e095daf27ae581c8406"
   integrity sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==
 
-"@wutiange/log-listener-plugin@^1.1.7":
-  version "1.1.7"
-  resolved "https://registry.yarnpkg.com/@wutiange/log-listener-plugin/-/log-listener-plugin-1.1.7.tgz#4d4622cfef1ad856aaf3a06cd18c559a47353a32"
-  integrity sha512-QVOLd50TqjoAUVMc8VNoZdZAY5KU00ZameURd4KGs2NN2UW9CjqvUAFb0yxYm0XIRvYFO+hdF4iM59hF7To9FA==
+"@wutiange/log-listener-plugin@^1.1.8":
+  version "1.1.8"
+  resolved "https://registry.yarnpkg.com/@wutiange/log-listener-plugin/-/log-listener-plugin-1.1.8.tgz#e68b55b16a203e0644482106ace40abb6b7e3b14"
+  integrity sha512-rKHTFJ7yQLbJJVWyCQ9XD8x8hd6qhRo3aZ2JtknvKTjacN2jQWP79Z/lpeZMWym2ZwjRl1eonLtfRpGlYJ4gEg==
 
 abort-controller@^3.0.0:
   version "3.0.0"
