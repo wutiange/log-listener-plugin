@@ -10,7 +10,7 @@ const App = () => {
         console.log('拿到结果了', res);
       })
       .catch((err: any) => {
-        console.warn('出现错误了', err);
+        console.warn('出现错误了', err.message);
       });
   };
 
