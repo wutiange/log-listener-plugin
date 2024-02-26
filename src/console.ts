@@ -1,18 +1,19 @@
 import logger from './index'
 
-const [log, warn, error] = [console.log, console.warn, console.error]
+import('./common.js').then(common => {
+  console.log = (...data: any[]) => {
+    logger.log(...data)
+    common.log(...data)
+  }
+  
+  console.warn = (...data: any[]) => {
+    logger.warn(...data)
+    common.warn(...data)
+  }
+  
+  console.error = (...data: any[]) => {
+    logger.error(...data)
+    common.error(...data)
+  }
+})
 
-console.log = (...data: any[]) => {
-  logger.log(...data)
-  log(...data)
-}
-
-console.warn = (...data: any[]) => {
-  logger.warn(...data)
-  warn(...data)
-}
-
-console.error = (...data: any[]) => {
-  logger.error(...data)
-  error(...data)
-}

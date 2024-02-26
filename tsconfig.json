@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "NodeNext",
     "declaration": true,
     "noImplicitAny": true,
     "removeComments": true,
@@ -8,7 +8,8 @@
     "outDir": "dist",
     "sourceMap": true,
     "esModuleInterop": true,
-    "target": "es6"
+    "target": "es6",
+    "moduleResolution": "NodeNext"
   },
   "exclude": ["node_modules", "**/*.spec.ts"],
   "include": ["src/**/*"]

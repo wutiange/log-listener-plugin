@@ -4,7 +4,6 @@ class Server {
   private baseUrl = '';
   private port = 27751
   private timeout: number;
-  private nativeFetch: typeof fetch
 
 
   constructor(url: string, timeout: number = 3000) {
@@ -16,14 +15,11 @@ class Server {
     this.timeout = timeout
   }
 
-  updateNativeFetch(nativeFetch: typeof fetch) {
-    this.nativeFetch = nativeFetch
-  }
-
   private async send(path: string, data: Record<string, any>) {
     try {
+      const common = await import('./common.js')
       const result = await Promise.race([
-        this.nativeFetch?.(`${this.baseUrl}:${this.port}/${path}`, {
+        common.tempFetch(`${this.baseUrl}:${this.port}/${path}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json;charset=utf-8'

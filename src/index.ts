@@ -15,10 +15,6 @@ class Logger {
     }
   }
 
-  setFetch(nativeFetch: typeof fetch) {
-    this.server?.updateNativeFetch(nativeFetch)
-  }
-
   setTimeout(timeout: number) {
     if (typeof timeout === 'number') {
       this.timeout = timeout
