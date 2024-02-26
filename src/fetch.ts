@@ -4,7 +4,7 @@ import { sleep } from './utils'
 
 
 // @ts-ignore
-global.fetch = async function (input: RequestInfo | URL, init?: RequestInit) {
+global.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
   const uniqueId = (Date.now() + Math.random()).toString(16)
   logger.uniqueReq(uniqueId, input, init)
   let isFetchFinished = false

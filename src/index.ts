@@ -40,7 +40,7 @@ class Logger {
       level: level ?? 'log',
       createTime: Date.now()
     }
-    this.server.log(sendData)
+    this.server?.log(sendData)
   }
 
   tag(tag: string, ...data: any[]) {
@@ -60,7 +60,7 @@ class Logger {
   }
 
   async uniqueReq(uniqueId: string, input: RequestInfo | URL, init?: RequestInit) {
-    return this.server.network({
+    return this.server?.network({
       ...this.baseData,
       url: input,
       id: uniqueId,
@@ -73,7 +73,7 @@ class Logger {
 
   private async _res(uniqueId?: string, id?: number, response?: Response) {
     const body = await response.text()
-    return this.server.network({
+    return this.server?.network({
       ...this.baseData,
       headers: (response?.headers as Record<string, any>)['map'],
       body,
@@ -84,7 +84,7 @@ class Logger {
   }
 
   async resTimeout(uniqueId: string) {
-    return this.server.network({
+    return this.server?.network({
       ...this.baseData,
       isTimeout: true,
       uniqueId,
@@ -92,7 +92,7 @@ class Logger {
   }
 
   async resResponseError(uniqueId: string) {
-    return this.server.network({
+    return this.server?.network({
       ...this.baseData,
       isResponseError: true,
       uniqueId,
