@@ -5,6 +5,7 @@ class Logger {
 
   private server: Server | null = null
   private baseData: Record<string, any> = {}
+  private timeout: number | null = null
 
   setBaseUrl(url: string) {
     if (this.server) {
@@ -12,6 +13,19 @@ class Logger {
     } else {
       this.server = new Server(url)
     }
+  }
+
+  setTimeout(timeout: number) {
+    if (typeof timeout === 'number') {
+      this.timeout = timeout
+    }
+  }
+
+  getTimeout() {
+    if (typeof this.timeout === 'number') {
+      return this.timeout
+    }
+    return null
   }
 
   setBaseData(data: Record<string, any> = {}) {
@@ -68,8 +82,23 @@ class Logger {
       endTime: Date.now(),
       isTimeout,
       uniqueId,
-      isResponseError: id === undefined || id === null
     })
+  }
+
+  async resTimeout(uniqueId: string) {
+    return this.server.network({
+      ...this.baseData,
+      isTimeout: true,
+      uniqueId,
+    })
+  }
+
+  async resResponseError(uniqueId: string) {
+    return this.server.network({
+      ...this.baseData,
+      isResponseError: true,
+      uniqueId,
+    }) 
   }
 
   async uniqueRes(uniqueId: string, response?: Response, isTimeout = false) {
