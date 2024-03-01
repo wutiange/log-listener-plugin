@@ -17,6 +17,9 @@ class Server {
 
   private async send(path: string, data: Record<string, any>) {
     try {
+      if (!this.baseUrl) {
+        return null
+      }
       const common = await import('./common.js')
       const result = await Promise.race([
         common.tempFetch(`${this.baseUrl}:${this.port}/${path}`, {
