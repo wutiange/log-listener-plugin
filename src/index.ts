@@ -63,7 +63,7 @@ class Logger {
   async uniqueReq(uniqueId: string, input: RequestInfo | URL, init?: RequestInit) {
     let url: string | null = null
     let method = init?.method ?? 'get'
-    let headers = init?.headers
+    let headers = (init?.headers as Record<string, any>)['map']
     let body = init?.body
     if (input instanceof Request) {
       url = input.url
