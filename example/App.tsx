@@ -17,8 +17,11 @@ const App = () => {
 
   const onPressFetchGet = async () => {
     try {
-      const result = await fetch('https://jsonplaceholder.typicode.com/posts');
+      const url = 'https://jsonplaceholder.typicode.com/posts';
+      const result = await fetch(url);
       console.log(await result.json());
+      const request = new Request(url, {method: 'get'});
+      await fetch(request);
     } catch (error) {
       console.error(error);
     }
