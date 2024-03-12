@@ -61,13 +61,27 @@ class Logger {
   }
 
   async uniqueReq(uniqueId: string, input: RequestInfo | URL, init?: RequestInit) {
+    let url: string | null = null
+    let method = init?.method ?? 'get'
+    let headers = init?.headers
+    let body = init?.body
+    if (input instanceof Request) {
+      url = input.url
+      method = input.method ?? 'get'
+      headers = input.headers
+      body = input.body
+    } else if (input instanceof URL) {
+      url = input.href
+    } else {
+      url = input
+    }
     return this.server?.network({
       ...this.baseData,
-      url: input,
+      url,
       id: uniqueId,
-      method: init?.method ?? "get",
-      headers: init?.headers,
-      body: init?.body,
+      method,
+      headers,
+      body,
       createTime: Date.now(),
     })
   }

@@ -27,7 +27,12 @@ class Server {
           headers: {
             'Content-Type': 'application/json;charset=utf-8'
           },
-          body: JSON.stringify(data)
+          body: JSON.stringify(data, (_, val) => {
+            if (val instanceof Error) {
+              return val.toString()
+            }
+            return val
+          })
         }),
         sleep(this.timeout, true)
       ]) 
