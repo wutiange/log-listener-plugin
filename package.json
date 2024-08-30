@@ -2,8 +2,7 @@
   "name": "@wutiange/log-listener-plugin",
   "version": "1.2.3",
   "description": "这是log-record的插件，如果需要使用这个日志监听，那么就需要把这个插件安装到项目中",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.ts",
   "repository": "https://github.com/wutiange/log-listener-plugin.git",
   "author": "wutiange <wutiange20@qq,com>",
   "license": "MIT",
@@ -32,6 +31,7 @@
   "files": [
     "src",
     "package.json",
+    "packages",
     "README.md",
     "LICENSE",
     "dist"

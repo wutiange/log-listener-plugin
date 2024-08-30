@@ -7,9 +7,10 @@
     "preserveConstEnums": true,
     "outDir": "dist",
     "sourceMap": true,
-    "esModuleInterop": true,
     "target": "es6",
-    "moduleResolution": "NodeNext"
+    "moduleResolution": "NodeNext",
+    "allowJs": true,
+    "esModuleInterop": true
   },
   "exclude": ["node_modules", "**/*.spec.ts"],
   "include": ["src/**/*"]
