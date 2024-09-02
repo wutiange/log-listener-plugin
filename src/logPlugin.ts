@@ -1,11 +1,53 @@
 import Server from './server';
+import Logger from '../packages/network-logger/Logger.ts';
+import NetworkRequestInfo from '../packages/network-logger/NetworkRequestInfo.ts';
+import { extractDomain } from './utils.ts';
 
 class LogPlugin {
   private server: Server | null = null;
   private baseData: Record<string, any> = {};
   private timeout: number | null = null;
+  private networkLogger = new Logger();
+  private host = '';
+
+  auto() {
+    this.startRecordNetwork();
+    this.networkLogger.enableXHRInterception({
+      ignoredHosts: [extractDomain(this.host)],
+    });
+    this.startRecordLog();
+  }
+
+  startRecordLog() {
+    import('./common').then((common) => {
+      console.log = (...data: any[]) => {
+        this.log(...data);
+        common.log(...data);
+      };
+
+      console.warn = (...data: any[]) => {
+        this.warn(...data);
+        common.warn(...data);
+      };
+
+      console.error = (...data: any[]) => {
+        this.error(...data);
+        common.error(...data);
+      };
+    });
+  }
+
+  startRecordNetwork() {
+    this.networkLogger.setCallback((data: NetworkRequestInfo[]) => {
+      // log('network----', data);
+      import('./common').then(({ log }) => {
+        log('network----', JSON.stringify(data));
+      })
+    });
+  }
 
   setBaseUrl(url: string) {
+    this.host = url.includes("http") ? url : `http://${url}`;
     if (this.server) {
       this.server.updateUrl(url);
     } else {
@@ -68,9 +110,9 @@ class LogPlugin {
    * @deprecated 不需要手动上报，日志插件会自动收集日志
    */
   async uniqueReq(
-    uniqueId: string,
+    uniqueId: string | undefined,
     input: RequestInfo | URL,
-    init?: RequestInit,
+    init?: RequestInit
   ) {
     let url: string | null = null;
     let method = init?.method ?? 'get';
@@ -98,7 +140,7 @@ class LogPlugin {
   }
 
   private async _res(uniqueId?: string, id?: number, response?: Response) {
-    const body = await response.text();
+    const body = await response?.text();
     return this.server?.network({
       ...this.baseData,
       headers: (response?.headers as Record<string, any>).map,
@@ -153,5 +195,5 @@ class LogPlugin {
   }
 }
 const logPlugin = new LogPlugin();
-export {LogPlugin};
+export { LogPlugin };
 export default logPlugin;

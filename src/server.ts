@@ -1,8 +1,7 @@
-import {sleep} from './utils';
-
+import {hasPort, sleep} from './utils';
+const DEFAULT_PORT = 27751
 class Server {
   private baseUrl = '';
-  private port = 27751;
   private timeout: number;
 
   constructor(url: string, timeout: number = 3000) {
@@ -14,14 +13,21 @@ class Server {
     this.timeout = timeout;
   }
 
+  private getPort() {
+    if (hasPort(this.baseUrl)) {
+      return this.baseUrl
+    }
+    return `${this.baseUrl}:${DEFAULT_PORT}`;
+  }
+
   private async send(path: string, data: Record<string, any>) {
     try {
       if (!this.baseUrl) {
         return null;
       }
-      const common = await import('./common.js');
+      const common = await import('./common');
       const result = await Promise.race([
-        common.tempFetch(`${this.baseUrl}:${this.port}/${path}`, {
+        common.tempFetch(`${this.baseUrl}:${this.getPort()}/${path}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json;charset=utf-8',

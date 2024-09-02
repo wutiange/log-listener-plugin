@@ -1,12 +1,13 @@
 {
   "name": "@wutiange/log-listener-plugin",
-  "version": "1.2.3",
+  "version": "1000.0.0",
   "description": "这是log-record的插件，如果需要使用这个日志监听，那么就需要把这个插件安装到项目中",
   "main": "src/index.ts",
+  "source": "src/index.ts",
   "repository": "https://github.com/wutiange/log-listener-plugin.git",
   "author": "wutiange <wutiange20@qq,com>",
   "license": "MIT",
-  "private": false,
+  "private": true,
   "exports": {
     "console": {
       "default": "./dist/console.js"
@@ -15,6 +16,7 @@
       "default": "./dist/fetch.js"
     }
   },
+  "workspaces":["example"],
   "scripts": {
     "build": "tsc",
     "dev": "ts-node ./src/index.ts",

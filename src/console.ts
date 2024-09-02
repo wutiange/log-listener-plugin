@@ -5,7 +5,7 @@
 
 import logger from './index';
 
-import('./common.js').then(common => {
+import('./common').then(common => {
   console.log = (...data: any[]) => {
     logger.log(...data);
     common.log(...data);

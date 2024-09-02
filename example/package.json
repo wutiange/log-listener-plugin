@@ -10,7 +10,7 @@
     "test": "jest"
   },
   "dependencies": {
-    "@wutiange/log-listener-plugin": "../",
+    "@wutiange/log-listener-plugin": "*",
     "react": "18.2.0",
     "react-native": "0.73.5"
   },

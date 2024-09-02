@@ -17,13 +17,17 @@ const App = () => {
 
   const onPressFetchGet = async () => {
     try {
-      const url = 'https://jsonplaceholder.typicode.com/posts';
-      const result = await fetch(url);
-      console.log(await result.json());
-      const request = new Request(url, {method: 'get'});
-      await fetch(request);
+      const url = 'https://httpstat.us/200';
+      const result = await fetch(url, {
+        headers: {
+          ['Content-Type']: 'application/json',
+        },
+      });
+      // console.log(await result.json());
+      // const request = new Request(url, {method: 'get'});
+      // await fetch(request);
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   };
 
@@ -33,6 +37,9 @@ const App = () => {
       <Button title="测试 console.warn" onPress={onPressWarn} />
       <Button title="测试 console.error" onPress={onPressError} />
       <Button title="测试 fetch get" onPress={onPressFetchGet} />
+      <Button title="测试 自己" onPress={() => {
+        fetch('http://192.168.120.64:27751/log')
+      }} />
     </SafeAreaView>
   );
 };

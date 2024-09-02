@@ -7,6 +7,15 @@ const path = require('path');
  *
  * @type {import('metro-config').MetroConfig}
  */
-const config = {};
+const config = {
+  watchFolders: [
+    path.resolve(__dirname, '..'),
+  ],
+  resolver: {
+    extraNodeModules: {
+      '@wutiange/log-listener-plugin': path.resolve(__dirname, '..'),
+    },
+  },
+};
 
 module.exports = mergeConfig(getDefaultConfig(__dirname), config);
