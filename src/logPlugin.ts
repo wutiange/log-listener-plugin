@@ -2,6 +2,7 @@ import Server from './server';
 import Logger from '../packages/network-logger/Logger.ts';
 import NetworkRequestInfo from '../packages/network-logger/NetworkRequestInfo.ts';
 import { extractDomain } from './utils.ts';
+import CompatibilityManager from './CompatibilityManager.ts';
 
 class LogPlugin {
   private server: Server | null = null;
@@ -38,10 +39,17 @@ class LogPlugin {
   }
 
   startRecordNetwork() {
-    this.networkLogger.setCallback((data: NetworkRequestInfo[]) => {
+    this.networkLogger.setCallback(async (data: NetworkRequestInfo[]) => {
       // log('network----', data);
       import('./common').then(({ log }) => {
         log('network----', JSON.stringify(data));
+      })
+      const sendDatas = await CompatibilityManager.interceptionToNetwork(data);
+      sendDatas.forEach(e => {
+        this.server?.network({
+          ...this.baseData,
+          ...e
+        });
       })
     });
   }

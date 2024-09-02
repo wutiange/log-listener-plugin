@@ -37,9 +37,12 @@ const App = () => {
       <Button title="测试 console.warn" onPress={onPressWarn} />
       <Button title="测试 console.error" onPress={onPressError} />
       <Button title="测试 fetch get" onPress={onPressFetchGet} />
-      <Button title="测试 自己" onPress={() => {
-        fetch('http://192.168.120.64:27751/log')
-      }} />
+      <Button
+        title="测试 自己"
+        onPress={() => {
+          fetch('http://192.168.120.64:27751/log');
+        }}
+      />
     </SafeAreaView>
   );
 };

@@ -5,15 +5,16 @@
 import logger from './index';
 import {sleep} from './utils';
 
-import('./common.js').then(common => {
+import('./common').then(common => {
   // @ts-ignore
   global.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     const uniqueId = (Date.now() + Math.random()).toString(16);
     logger.uniqueReq(uniqueId, input, init);
     let isFetchFinished = false;
     let isTimeout = false;
-    if (logger.getTimeout() !== null) {
-      sleep(logger.getTimeout()).then(() => {
+    const timeout = logger.getTimeout()
+    if (timeout !== null) {
+      sleep(timeout).then(() => {
         if (!isFetchFinished) {
           isTimeout = true;
           logger.resTimeout(uniqueId);

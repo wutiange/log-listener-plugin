@@ -16,7 +16,6 @@
       "default": "./dist/fetch.js"
     }
   },
-  "workspaces":["example"],
   "scripts": {
     "build": "tsc",
     "dev": "ts-node ./src/index.ts",
