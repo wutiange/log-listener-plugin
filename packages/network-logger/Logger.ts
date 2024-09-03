@@ -1,3 +1,4 @@
+// @ts-ignore
 import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
 import NetworkRequestInfo from './NetworkRequestInfo';
 import type {Headers, RequestMethod, StartNetworkLoggingOptions} from './types';
@@ -13,6 +14,7 @@ type XHR = {
   responseHeaders?: Headers;
 };
 
+
 export default class Logger {
   private requests: NetworkRequestInfo[] = [];
   private xhrIdMap: Map<number, () => number> = new Map();
@@ -25,7 +27,7 @@ export default class Logger {
   public enabled = false;
   public paused = false;
 
-  callback = (_: NetworkRequestInfo[]) => null;
+  callback = (_: NetworkRequestInfo[]): void => null;
 
   setCallback = (callback: any) => {
     this.callback = callback;
@@ -259,7 +261,7 @@ export default class Logger {
     this.ignoredUrls = undefined;
     this.ignoredPatterns = undefined;
 
-    const noop = () => null;
+    const noop = (): void => null;
     // manually reset callbacks even if the XHRInterceptor lib does it for us with 'disableInterception'
     XHRInterceptor.setOpenCallback(noop);
     XHRInterceptor.setRequestHeaderCallback(noop);

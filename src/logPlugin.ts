@@ -1,8 +1,8 @@
 import Server from './server';
-import Logger from '../packages/network-logger/Logger.ts';
-import NetworkRequestInfo from '../packages/network-logger/NetworkRequestInfo.ts';
-import { extractDomain } from './utils.ts';
-import CompatibilityManager from './CompatibilityManager.ts';
+import Logger from '../packages/network-logger/Logger';
+import NetworkRequestInfo from '../packages/network-logger/NetworkRequestInfo';
+import { extractDomain } from './utils';
+import CompatibilityManager from './CompatibilityManager';
 
 class LogPlugin {
   private server: Server | null = null;
@@ -13,14 +13,11 @@ class LogPlugin {
 
   auto() {
     this.startRecordNetwork();
-    this.networkLogger.enableXHRInterception({
-      ignoredHosts: [extractDomain(this.host)],
-    });
     this.startRecordLog();
   }
 
   startRecordLog() {
-    import('./common').then((common) => {
+    import('./common.js').then((common) => {
       console.log = (...data: any[]) => {
         this.log(...data);
         common.log(...data);
@@ -47,6 +44,10 @@ class LogPlugin {
           ...e
         });
       })
+    });
+
+    this.networkLogger.enableXHRInterception({
+      ignoredHosts: [extractDomain(this.host)],
     });
   }
 

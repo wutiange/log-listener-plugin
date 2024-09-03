@@ -10,8 +10,9 @@
     "target": "es6",
     "moduleResolution": "NodeNext",
     "allowJs": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "skipLibCheck": true
   },
   "exclude": ["node_modules", "**/*.spec.ts"],
-  "include": ["*"]
+  "include": ["src/**/*", "packages/**/*"]
 }

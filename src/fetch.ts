@@ -5,7 +5,7 @@
 import logger from './index';
 import {sleep} from './utils';
 
-import('./common').then(common => {
+import('./common.js').then(common => {
   // @ts-ignore
   global.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
     const uniqueId = (Date.now() + Math.random()).toString(16);

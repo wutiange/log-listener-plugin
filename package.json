@@ -2,7 +2,8 @@
   "name": "@wutiange/log-listener-plugin",
   "version": "1000.0.0",
   "description": "这是log-record的插件，如果需要使用这个日志监听，那么就需要把这个插件安装到项目中",
-  "main": "src/index.ts",
+  "main": "dist/src/index.js",
+  "types": "dist/src/index.d.ts",
   "source": "src/index.ts",
   "repository": "https://github.com/wutiange/log-listener-plugin.git",
   "author": "wutiange <wutiange20@qq,com>",
@@ -28,6 +29,9 @@
     "ts-jest": "^29.1.2",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "react-native": "*"
   },
   "files": [
     "src",

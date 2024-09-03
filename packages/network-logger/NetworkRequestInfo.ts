@@ -1,3 +1,4 @@
+// @ts-ignore
 import BlobFileReader from 'react-native/Libraries/Blob/FileReader';
 import type {Headers, NetworkRequestInfoRow, RequestMethod} from './types';
 import fromEntries from './utils/fromEntries';
@@ -19,8 +20,8 @@ export default class NetworkRequestInfo {
   timeout = 0;
   closeReason = '';
   messages = '';
-  serverClose = undefined;
-  serverError = undefined;
+  serverClose: any = undefined;
+  serverError: any = undefined;
   startTime: number = 0;
   endTime: number = 0;
   gqlOperation?: string;
