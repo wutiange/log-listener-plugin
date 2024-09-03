@@ -40,12 +40,8 @@ class LogPlugin {
 
   startRecordNetwork() {
     this.networkLogger.setCallback(async (data: NetworkRequestInfo[]) => {
-      // log('network----', data);
-      import('./common').then(({ log }) => {
-        log('network----', JSON.stringify(data));
-      })
-      const sendDatas = await CompatibilityManager.interceptionToNetwork(data);
-      sendDatas.forEach(e => {
+      const sendData = await CompatibilityManager.interceptionToNetwork(data);
+      sendData.forEach(e => {
         this.server?.network({
           ...this.baseData,
           ...e

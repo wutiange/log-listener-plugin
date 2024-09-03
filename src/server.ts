@@ -15,9 +15,9 @@ class Server {
 
   private getPort() {
     if (hasPort(this.baseUrl)) {
-      return this.baseUrl
+      return ''
     }
-    return `${this.baseUrl}:${DEFAULT_PORT}`;
+    return DEFAULT_PORT;
   }
 
   private async send(path: string, data: Record<string, any>) {

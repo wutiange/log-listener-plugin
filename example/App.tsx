@@ -16,19 +16,16 @@ const App = () => {
   };
 
   const onPressFetchGet = async () => {
-    try {
-      const url = 'https://httpstat.us/200';
-      const result = await fetch(url, {
-        headers: {
-          ['Content-Type']: 'application/json',
-        },
+    const url = 'https://httpstat.us/200';
+    await fetch(url, {
+      headers: {
+        ['Content-Type']: 'application/json',
+      },
+    })
+      .then(res => res.text())
+      .then(res => {
+        console.log(res);
       });
-      // console.log(await result.json());
-      // const request = new Request(url, {method: 'get'});
-      // await fetch(request);
-    } catch (error) {
-      // console.error(error);
-    }
   };
 
   return (
@@ -40,7 +37,7 @@ const App = () => {
       <Button
         title="测试 自己"
         onPress={() => {
-          fetch('http://192.168.120.64:27751/log');
+          fetch('http://192.168.3.52:27751/log');
         }}
       />
     </SafeAreaView>
