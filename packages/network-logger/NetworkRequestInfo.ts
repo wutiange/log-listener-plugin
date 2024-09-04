@@ -130,4 +130,32 @@ export default class NetworkRequestInfo {
 
     return this.stringifyFormat(body);
   }
+
+  public copy(): NetworkRequestInfo {
+    const newInstance = new NetworkRequestInfo(this.id, this.type, this.method, this.url);
+    
+    // 复制基本类型属性
+    newInstance.status = this.status;
+    newInstance.dataSent = this.dataSent;
+    newInstance.responseContentType = this.responseContentType;
+    newInstance.responseSize = this.responseSize;
+    newInstance.response = this.response;
+    newInstance.responseURL = this.responseURL;
+    newInstance.responseType = this.responseType;
+    newInstance.timeout = this.timeout;
+    newInstance.closeReason = this.closeReason;
+    newInstance.messages = this.messages;
+    newInstance.serverClose = this.serverClose;
+    newInstance.serverError = this.serverError;
+    newInstance.startTime = this.startTime;
+    newInstance.endTime = this.endTime;
+    newInstance.gqlOperation = this.gqlOperation;
+    newInstance.updatedAt = this.updatedAt;
+
+    // 深拷贝对象类型属性
+    newInstance.requestHeaders = JSON.parse(JSON.stringify(this.requestHeaders));
+    newInstance.responseHeaders = JSON.parse(JSON.stringify(this.responseHeaders));
+
+    return newInstance;
+  }
 }

@@ -7,18 +7,25 @@ class CompatibilityManager {
     if (Object.keys(CompatibilityManager.requestInfoObj).length === 0) {
       CompatibilityManager.requestInfoObj = data.reduce((e, c) => {
         if (c.endTime) {
+          const startReq = c.copy()
+          startReq.endTime = 0;
+          tempWillSendArr.push(startReq, c)
           return e
         }
+        tempWillSendArr.push(c)
         return {...e, [c.id]: c}
       }, {})
-      tempWillSendArr.concat(data)
     } else {
       data.forEach(e => {
         const tempObj = CompatibilityManager.requestInfoObj
         if (!(e.id in tempObj)) {
-          tempWillSendArr.push(e)
           if (!e.endTime) {
+            tempWillSendArr.push(e)
             CompatibilityManager.requestInfoObj[e.id] = e
+          } else {
+            const startReq = e.copy()
+            startReq.endTime = 0;
+            tempWillSendArr.push(startReq, e)
           }
           return
         }
