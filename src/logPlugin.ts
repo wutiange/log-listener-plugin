@@ -10,10 +10,20 @@ class LogPlugin {
   private timeout: number | null = null;
   private networkLogger = new Logger();
   private host = '';
+  private isAuto = false
 
   auto() {
-    this.startRecordNetwork();
-    this.startRecordLog();
+    if (this.host) {
+      this.startRecordNetwork();
+      this.startRecordLog();
+    }
+    this.isAuto = true
+  }
+
+  unAuto() {
+    this.stopRecordLog()
+    this.networkLogger.disableXHRInterception()
+    this.isAuto = false
   }
 
   startRecordLog() {
@@ -34,6 +44,13 @@ class LogPlugin {
     };
   }
 
+  stopRecordLog() {
+    const common = require('./common')
+    console.log = common.log
+    console.warn = common.warn
+    console.error = common.error
+  }
+
   startRecordNetwork() {
     this.networkLogger.setCallback(async (data: NetworkRequestInfo[]) => {
       const sendData = await CompatibilityManager.interceptionToNetwork(data);
@@ -51,11 +68,20 @@ class LogPlugin {
   }
 
   setBaseUrl(url: string) {
+    if (!url?.trim()) {
+      this.networkLogger.disableXHRInterception()
+      this.stopRecordLog()
+      return
+    }
     this.host = url.includes("http") ? url : `http://${url}`;
     if (this.server) {
       this.server.updateUrl(url);
     } else {
       this.server = new Server(url);
+    }
+    if (this.isAuto) {
+      this.startRecordNetwork();
+      this.startRecordLog()
     }
   }
 

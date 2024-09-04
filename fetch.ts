@@ -3,9 +3,9 @@
  * @deprecated 不需要手动导入文件，使用 logger.auto 就会自动开始收集日志
  */
 import logger from './index';
-import {sleep} from './utils';
+import {sleep} from './src/utils';
 
-const common = require('./common');
+const common = require('./src/common');
 // @ts-ignore
 global.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
   const uniqueId = (Date.now() + Math.random()).toString(16);

@@ -1,5 +1,5 @@
-import '../console'
-import logger from '../index'
+import '../../console'
+import logger from '../../index'
 describe("重写日志", () => {
   it("log 没有提前设置 url", () => {
     console.log("log 是否正常打印")
