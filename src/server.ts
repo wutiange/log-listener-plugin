@@ -25,7 +25,7 @@ class Server {
       if (!this.baseUrl) {
         return null;
       }
-      const common = await import('./common.js');
+      const common = require('./common');
       const result = await Promise.race([
         common.tempFetch(`${this.baseUrl}:${this.getPort()}/${path}`, {
           method: 'POST',

@@ -17,22 +17,21 @@ class LogPlugin {
   }
 
   startRecordLog() {
-    import('./common.js').then((common) => {
-      console.log = (...data: any[]) => {
-        this.log(...data);
-        common.log(...data);
-      };
+    const common = require('./common')
+    console.log = (...data: any[]) => {
+      this.log(...data);
+      common.log(...data);
+    };
 
-      console.warn = (...data: any[]) => {
-        this.warn(...data);
-        common.warn(...data);
-      };
+    console.warn = (...data: any[]) => {
+      this.warn(...data);
+      common.warn(...data);
+    };
 
-      console.error = (...data: any[]) => {
-        this.error(...data);
-        common.error(...data);
-      };
-    });
+    console.error = (...data: any[]) => {
+      this.error(...data);
+      common.error(...data);
+    };
   }
 
   startRecordNetwork() {

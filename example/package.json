@@ -7,10 +7,10 @@
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "postinstall": "cd ../ yarn build && yarn link && cd example && yarn link '@wutiange/log-listener-plugin'"
   },
   "dependencies": {
-    "@wutiange/log-listener-plugin": "*",
     "react": "18.2.0",
     "react-native": "0.73.5"
   },
