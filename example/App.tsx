@@ -40,6 +40,15 @@ const App = () => {
           fetch('http://192.168.3.52:27751/log');
         }}
       />
+      <Button
+        title="测试 json"
+        onPress={() => {
+          fetch('http://127.0.0.1:5050/get')
+            .then(res => res.json())
+            .then(res => console.log(res))
+            .catch(err => console.log(err));
+        }}
+      />
     </SafeAreaView>
   );
 };

@@ -27,11 +27,11 @@ interface HttpRequestInfo {
   url: string;
   timeout: number;
   requestHeaders: Record<string, string>;
-  requestData: string;
+  requestData: any | null;
   startTime: number;
   endTime: number;
   responseHeaders: Headers;
-  responseData: string;
+  responseData: any | null;
   status: number;
   duration: number;
   responseContentType: string;
@@ -80,13 +80,14 @@ const parseResponseBlob = async (response: string) => {
 }
 
 const getResponseBody = async (responseType: string, response: string) => {
+  let body: any | null = null
   try {
-    const body = await (responseType !== 'blob'
+    body = await (responseType !== 'blob'
       ? response
       : parseResponseBlob(response));
     return JSON.parse(body)
   } catch (error) {
-    return null
+    return body ?? null
   }
 }
 
