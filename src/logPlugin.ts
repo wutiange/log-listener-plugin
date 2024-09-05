@@ -1,18 +1,15 @@
 import Server from './server';
-import Logger from '../packages/network-logger/Logger';
-import NetworkRequestInfo from '../packages/network-logger/NetworkRequestInfo';
 import { extractDomain } from './utils';
-import CompatibilityManager from './CompatibilityManager';
+import { httpInterceptor } from './HTTPInterceptor';
 
 class LogPlugin {
   private server: Server | null = null;
   private baseData: Record<string, any> = {};
   private timeout: number | null = null;
-  private networkLogger = new Logger();
   private host = '';
   private isAuto = false
 
-  auto() {
+  auto = () => {
     if (this.host) {
       this.startRecordNetwork();
       this.startRecordLog();
@@ -20,13 +17,14 @@ class LogPlugin {
     this.isAuto = true
   }
 
-  unAuto() {
+  unAuto = () => {
     this.stopRecordLog()
-    this.networkLogger.disableXHRInterception()
+    httpInterceptor.disable()
+    httpInterceptor.removeAllListener()
     this.isAuto = false
   }
 
-  startRecordLog() {
+  startRecordLog = () => {
     const common = require('./common')
     console.log = (...data: any[]) => {
       this.log(...data);
@@ -44,32 +42,43 @@ class LogPlugin {
     };
   }
 
-  stopRecordLog() {
+  stopRecordLog = () => {
     const common = require('./common')
     console.log = common.log
     console.warn = common.warn
     console.error = common.error
   }
 
-  startRecordNetwork() {
-    this.networkLogger.setCallback(async (data: NetworkRequestInfo[]) => {
-      const sendData = await CompatibilityManager.interceptionToNetwork(data);
-      sendData.forEach(e => {
-        this.server?.network({
-          ...this.baseData,
-          ...e
-        });
+  startRecordNetwork = () => {
+    httpInterceptor.addListener("send", (data) => {
+      this.server?.network({
+        ...this.baseData,
+        url: data.url,
+        id: data.id,
+        method: data.method,
+        headers: data.requestHeaders,
+        body: data.requestData,
+        createTime: data.startTime
       })
-    });
-
-    this.networkLogger.enableXHRInterception({
-      ignoredHosts: [extractDomain(this.host)],
-    });
+    })
+    httpInterceptor.addListener("response", (data) => {
+      this.server?.network({
+        ...this.baseData,
+        headers: data.responseHeaders,
+        body: data.responseData,
+        requestId: data.id,
+        statusCode: data.status,
+        endTime: data.endTime
+      })
+    })
+    httpInterceptor.enable({
+      ignoredHosts: [extractDomain(this.host)]
+    })
   }
 
-  setBaseUrl(url: string) {
+  setBaseUrl = (url: string) => {
     if (!url?.trim()) {
-      this.networkLogger.disableXHRInterception()
+      httpInterceptor.disable()
       this.stopRecordLog()
       return
     }
@@ -88,7 +97,7 @@ class LogPlugin {
   /**
    * @deprecated 不需要手动上报，日志插件会自动收集日志
    */
-  setTimeout(timeout: number) {
+  setTimeout = (timeout: number) => {
     if (typeof timeout === 'number') {
       this.timeout = timeout;
       this.server?.updateTimeout(this.timeout);
@@ -98,18 +107,18 @@ class LogPlugin {
   /**
    * @deprecated 不需要手动上报，日志插件会自动收集日志
    */
-  getTimeout() {
+  getTimeout = () => {
     if (typeof this.timeout === 'number') {
       return this.timeout;
     }
     return null;
   }
 
-  setBaseData(data: Record<string, any> = {}) {
+  setBaseData = (data: Record<string, any> = {}) => {
     this.baseData = data;
   }
 
-  private _log(level: string, tag: string, ...data: any[]) {
+  private _log = (level: string, tag: string, ...data: any[]) => {
     const sendData = {
       ...this.baseData,
       message: data,
@@ -120,30 +129,30 @@ class LogPlugin {
     this.server?.log(sendData);
   }
 
-  tag(tag: string, ...data: any[]) {
+  tag = (tag: string, ...data: any[]) => {
     this._log('log', tag, ...data);
   }
 
-  log(...data: any[]) {
+  log = (...data: any[]) => {
     this._log('log', 'default', ...data);
   }
 
-  warn(...data: any[]) {
+  warn = (...data: any[]) => {
     this._log('warn', 'default', ...data);
   }
 
-  error(...data: any[]) {
+  error = (...data: any[]) => {
     this._log('error', 'default', ...data);
   }
 
   /**
    * @deprecated 不需要手动上报，日志插件会自动收集日志
    */
-  async uniqueReq(
+  uniqueReq = async (
     uniqueId: string | undefined,
     input: RequestInfo | URL,
     init?: RequestInit
-  ) {
+  ) => {
     let url: string | null = null;
     let method = init?.method ?? 'get';
     let headers = init?.headers;
@@ -169,7 +178,7 @@ class LogPlugin {
     });
   }
 
-  private async _res(uniqueId?: string, id?: number, response?: Response) {
+  private _res = async (uniqueId?: string, id?: number, response?: Response) => {
     const body = await response?.text();
     return this.server?.network({
       ...this.baseData,
@@ -184,7 +193,7 @@ class LogPlugin {
   /**
    * @deprecated 不需要手动上报，日志插件会自动收集日志
    */
-  async resTimeout(uniqueId: string) {
+  resTimeout = async (uniqueId: string) => {
     return this.server?.network({
       ...this.baseData,
       isTimeout: true,
@@ -195,7 +204,7 @@ class LogPlugin {
   /**
    * @deprecated 不需要手动上报，日志插件会自动收集日志
    */
-  async resResponseError(uniqueId: string) {
+  resResponseError = async (uniqueId: string) => {
     return this.server?.network({
       ...this.baseData,
       isResponseError: true,
@@ -206,21 +215,21 @@ class LogPlugin {
   /**
    * @deprecated 不需要手动上报，日志插件会自动收集日志
    */
-  async uniqueRes(uniqueId: string, response?: Response) {
+  uniqueRes = async (uniqueId: string, response?: Response) => {
     return this._res(uniqueId, undefined, response);
   }
 
   /**
    * @deprecated 不需要手动上报，日志插件会自动收集日志
    */
-  async req(input: RequestInfo | URL, init?: RequestInit) {
+  req = async (input: RequestInfo | URL, init?: RequestInit) => {
     return this.uniqueReq(undefined, input, init);
   }
 
   /**
    * @deprecated 不需要手动上报，日志插件会自动收集日志
    */
-  async res(id: number, response?: Response) {
+  res = async (id: number, response?: Response) => {
     return this._res(undefined, id, response);
   }
 }

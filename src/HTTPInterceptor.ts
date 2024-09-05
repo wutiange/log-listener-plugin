@@ -1,5 +1,7 @@
 // @ts-ignore
 import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
+// @ts-ignore
+import BlobFileReader from 'react-native/Libraries/Blob/FileReader';
 
 type StartNetworkLoggingOptions = {
   /** List of hosts to ignore, e.g. `services.test.com` */
@@ -62,6 +64,32 @@ const generateUniqueId = () => {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 };
 
+const parseResponseBlob = async (response: string) => {
+  const blobReader = new BlobFileReader();
+  blobReader.readAsText(response);
+
+  return await new Promise<string>((resolve, reject) => {
+    const handleError = () => reject(blobReader.error);
+
+    blobReader.addEventListener('load', () => {
+      resolve(blobReader.result);
+    });
+    blobReader.addEventListener('error', handleError);
+    blobReader.addEventListener('abort', handleError);
+  });
+}
+
+const getResponseBody = async (responseType: string, response: string) => {
+  try {
+    const body = await (responseType !== 'blob'
+      ? response
+      : parseResponseBlob(response));
+    return JSON.parse(body)
+  } catch (error) {
+    return null
+  }
+}
+
 class HTTPInterceptor {
   private static _index = 0;
   private ignoredHosts: Set<string> | undefined;
@@ -72,14 +100,14 @@ class HTTPInterceptor {
 
   private userListeners: [
     EventName,
-    (data: Partial<HttpRequestInfo>) => void,
+    (data: Partial<HttpRequestInfo>) => Promise<void> | void,
   ][] = [];
 
   private enabled = false;
 
   addListener = (
     eventName: EventName,
-    listener: (data: Partial<HttpRequestInfo>) => void,
+    listener: (data: Partial<HttpRequestInfo>) => Promise<void> | void,
   ) => {
     // 如果之前已经订阅过了就过滤掉
     if (
@@ -102,7 +130,7 @@ class HTTPInterceptor {
 
   removeListener = (
     eventName: EventName,
-    listener: (data: Partial<HttpRequestInfo>) => void,
+    listener: (data: Partial<HttpRequestInfo>) => Promise<void> | void,
   ) => {
     this.userListeners = this.userListeners.filter(
       ([name, tempListener]) => name !== eventName || tempListener !== listener,
@@ -117,12 +145,14 @@ class HTTPInterceptor {
     eventName: EventName,
     data: Partial<HttpRequestInfo>,
   ) => {
-    this.userListeners.forEach(([name, listener]) => {
+    this.userListeners.forEach(async ([name, listener]) => {
       if (name === eventName) {
-        listener(data);
+        await listener(data);
       }
     });
   };
+
+  
 
   private openHandle = (method: RequestMethod, url: string, xhr: XHR) => {
     if (this.ignoredHosts) {
@@ -180,7 +210,7 @@ class HTTPInterceptor {
     this.listenerHandle('headerReceived', currentRequest);
   };
 
-  private responseHandle = (
+  private responseHandle = async (
     status: number,
     timeout: number,
     response: string,
@@ -195,7 +225,7 @@ class HTTPInterceptor {
     currentRequest.endTime = Date.now();
     currentRequest.status = status;
     currentRequest.timeout = timeout;
-    currentRequest.responseData = response;
+    currentRequest.responseData = await getResponseBody(responseType, response);
     currentRequest.responseURL = responseURL;
     currentRequest.responseType = responseType;
     currentRequest.duration =
@@ -270,6 +300,14 @@ class HTTPInterceptor {
       this.enabled = true;
     } catch (error) {}
   };
+
+  disable = () => {
+    if (!this.enabled) {
+      return;
+    }
+    XHRInterceptor.disableInterception();
+    this.enabled = false;
+  }
 }
 
 const httpInterceptor = new HTTPInterceptor();
