@@ -14,5 +14,6 @@
     "skipLibCheck": true
   },
   "exclude": ["node_modules", "**/*.spec.ts"],
-  "include": ["src/**/*", "packages/**/*", "console.ts", "fetch.ts"]
+  "include": ["src/**/*", "console.ts", "fetch.ts", "index.ts"]
+
 }

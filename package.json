@@ -39,9 +39,11 @@
   "files": [
     "src",
     "package.json",
-    "packages",
     "README.md",
     "LICENSE",
-    "dist"
+    "dist",
+    "console.ts",
+    "fetch.ts",
+    "index.ts"
   ]
 }
