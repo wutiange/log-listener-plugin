@@ -8,25 +8,7 @@ export function sleep(ms: number, isReject: boolean = false) {
   })
 }
 
-export function extractDomain(url: string) {
-  // 如果 url 是空的或不是字符串，直接返回
-  if (!url || typeof url !== 'string') {
-    return url;
-  }
-
-  // 使用正则表达式匹配 URL
-  const match = url.match(/^(https?:\/\/)?([^/:]+)/i);
-
-  // 如果没有匹配到，返回原始输入
-  if (!match) {
-    return url;
-  }
-
-  // 返回匹配到的域名部分
-  return match[2];
-}
-
-
+// 检查 url 是否有端口号，不包含内置的端口号，比如 80 ，443 等
 export function hasPort(url: string) {
   // 如果 url 是空的或不是字符串，返回 false
   if (!url || typeof url !== 'string') {
@@ -44,4 +26,60 @@ export function hasPort(url: string) {
     // 如果 URL 无效，捕获错误并返回 false
     return false;
   }
+}
+
+
+type Constructor<T = {}> = new (...args: any[]) => T;
+
+export function createClassWithErrorHandling<T extends Constructor>(BaseClass: T): T {
+  return new Proxy(BaseClass, {
+    construct(target: T, args: any[]): object {
+      const instance = new target(...args);
+      return new Proxy(instance, {
+        get(target: any, prop: string | symbol): any {
+          const value = target[prop];
+          if (typeof value === 'function') {
+            return function(this: any, ...args: any[]): any {
+              try {
+                const result = value.apply(this, args);
+                if (result instanceof Promise) {
+                  return result.catch((error: Error) => {
+                    console.error(`Error in ${String(prop)}:`, error);
+                    throw error; // 重新抛出错误，以便调用者可以捕获它
+                  });
+                }
+                return result;
+              } catch (error) {
+                console.error(`Error in ${String(prop)}:`, error);
+                throw error; // 重新抛出错误，以便调用者可以捕获它
+              }
+            };
+          }
+          return value;
+        },
+        set(target: any, prop: string | symbol, value: any): boolean {
+          if (typeof value === 'function') {
+            target[prop] = function(this: any, ...args: any[]): any {
+              try {
+                const result = value.apply(this, args);
+                if (result instanceof Promise) {
+                  return result.catch((error: Error) => {
+                    console.error(`Error in ${String(prop)}:`, error);
+                    throw error;
+                  });
+                }
+                return result;
+              } catch (error) {
+                console.error(`Error in ${String(prop)}:`, error);
+                throw error;
+              }
+            };
+          } else {
+            target[prop] = value;
+          }
+          return true;
+        }
+      });
+    }
+  });
 }

@@ -1,5 +1,5 @@
 import Server from './server';
-import { extractDomain } from './utils';
+import { createClassWithErrorHandling } from './utils';
 import { httpInterceptor } from './HTTPInterceptor';
 
 class LogPlugin {
@@ -71,9 +71,12 @@ class LogPlugin {
         endTime: data.endTime
       })
     })
-    httpInterceptor.enable({
-      ignoredHosts: [extractDomain(this.host)]
-    })
+    const url = this.server?.getUrl?.()
+    const ignoredUrls: string[] = []
+    if (url) {
+      ignoredUrls.concat([`${url}/log`, `${url}/network`])
+    }
+    httpInterceptor.enable({ignoredUrls})
   }
 
   setBaseUrl = (url: string) => {
@@ -233,6 +236,7 @@ class LogPlugin {
     return this._res(undefined, id, response);
   }
 }
-const logPlugin = new LogPlugin();
-export { LogPlugin };
+const SafeLogPlugin = createClassWithErrorHandling(LogPlugin)
+const logPlugin = new SafeLogPlugin();
+export { SafeLogPlugin };
 export default logPlugin;

@@ -2,6 +2,7 @@
 import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
 // @ts-ignore
 import BlobFileReader from 'react-native/Libraries/Blob/FileReader';
+import { createClassWithErrorHandling } from './utils';
 
 type StartNetworkLoggingOptions = {
   /** List of hosts to ignore, e.g. `services.test.com` */
@@ -311,7 +312,8 @@ class HTTPInterceptor {
   }
 }
 
-const httpInterceptor = new HTTPInterceptor();
+const SafeHTTPInterceptor = createClassWithErrorHandling(HTTPInterceptor)
+const httpInterceptor = new SafeHTTPInterceptor();
 export {
   type StartNetworkLoggingOptions,
   httpInterceptor,

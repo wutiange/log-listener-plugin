@@ -20,6 +20,10 @@ class Server {
     return DEFAULT_PORT;
   }
 
+  getUrl() {
+    return `${this.baseUrl}:${this.getPort()}`
+  }
+
   private async send(path: string, data: Record<string, any>) {
     try {
       if (!this.baseUrl) {
@@ -27,7 +31,7 @@ class Server {
       }
       const common = require('./common');
       const result = await Promise.race([
-        common.tempFetch(`${this.baseUrl}:${this.getPort()}/${path}`, {
+        common.tempFetch(`${this.getUrl()}/${path}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json;charset=utf-8',

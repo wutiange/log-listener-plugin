@@ -20,8 +20,10 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "ts-node ./src/index.ts",
+    "build": "npx yarn test && tsc",
+    "dev": "ts-node ./index.ts",
+    "publish-alpha": "npx yarn build && npm publish --access public --tag alpha",
+    "publish": "npx yarn build && npm publish --access public",
     "test": "jest"
   },
   "devDependencies": {
