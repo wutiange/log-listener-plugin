@@ -72,9 +72,9 @@ class LogPlugin {
       })
     })
     const url = this.server?.getUrl?.()
-    const ignoredUrls: string[] = []
+    let ignoredUrls: string[] = []
     if (url) {
-      ignoredUrls.concat([`${url}/log`, `${url}/network`])
+      ignoredUrls = [`${url}/log`, `${url}/network`]
     }
     httpInterceptor.enable({ignoredUrls})
   }
