@@ -1,8 +1,7 @@
-// @ts-ignore
 import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
-// @ts-ignore
 import BlobFileReader from 'react-native/Libraries/Blob/FileReader';
-import { createClassWithErrorHandling } from './utils';
+import {Blob} from 'buffer';
+import { createClassWithErrorHandling, formDataToString } from './utils';
 
 type StartNetworkLoggingOptions = {
   /** List of hosts to ignore, e.g. `services.test.com` */
@@ -65,7 +64,7 @@ const generateUniqueId = () => {
   return Date.now().toString(36) + Math.random().toString(36).substr(2);
 };
 
-const parseResponseBlob = async (response: string) => {
+const parseResponseBlob = async (response: Blob) => {
   const blobReader = new BlobFileReader();
   blobReader.readAsText(response);
 
@@ -78,19 +77,19 @@ const parseResponseBlob = async (response: string) => {
     blobReader.addEventListener('error', handleError);
     blobReader.addEventListener('abort', handleError);
   });
-}
+};
 
-const getResponseBody = async (responseType: string, response: string) => {
-  let body: any | null = null
+const getResponseBody = async (responseType: string, response: any) => {
   try {
-    body = await (responseType !== 'blob'
-      ? response
-      : parseResponseBlob(response));
-    return JSON.parse(body)
+    if (responseType === 'blob' && response) {
+      return await parseResponseBlob(response as unknown as Blob);
+    }
+    return response ?? null;
   } catch (error) {
-    return body ?? null
+    console.warn("getResponseBody---error---", error)
+    return null;
   }
-}
+};
 
 class HTTPInterceptor {
   private static _index = 0;
@@ -154,8 +153,6 @@ class HTTPInterceptor {
     });
   };
 
-  
-
   private openHandle = (method: RequestMethod, url: string, xhr: XHR) => {
     if (this.ignoredHosts) {
       const host = extractHost(url);
@@ -215,7 +212,7 @@ class HTTPInterceptor {
   private responseHandle = async (
     status: number,
     timeout: number,
-    response: string,
+    response: any,
     responseURL: string,
     responseType: string,
     xhr: XHR,
@@ -236,13 +233,17 @@ class HTTPInterceptor {
     this.allRequests.delete(xhr.uniqueId);
   };
 
-  private sendHandle = (data: string, xhr: XHR) => {
+  private sendHandle = (data: any, xhr: XHR) => {
     const currentRequest = this.allRequests.get(xhr.uniqueId);
     if (!currentRequest) {
       return;
     }
     try {
-      currentRequest.requestData = JSON.parse(data);
+      if (data && typeof data === 'object' && data instanceof FormData) {
+        currentRequest.requestData = formDataToString(data);
+      } else {
+        currentRequest.requestData = JSON.parse(data);
+      }
     } catch (error) {
       currentRequest.requestData = null;
     }
@@ -309,7 +310,7 @@ class HTTPInterceptor {
     }
     XHRInterceptor.disableInterception();
     this.enabled = false;
-  }
+  };
 }
 
 const SafeHTTPInterceptor = createClassWithErrorHandling(HTTPInterceptor)

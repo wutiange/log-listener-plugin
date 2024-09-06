@@ -1,3 +1,4 @@
+
 export function sleep(ms: number, isReject: boolean = false) {
   return new Promise((resolve, reject) => {
     setTimeout(isReject ? () => reject({
@@ -82,4 +83,25 @@ export function createClassWithErrorHandling<T extends Constructor>(BaseClass: T
       });
     }
   });
+}
+
+
+export function formDataToString(formData: FormData): string {
+  const boundary =
+    '----WebKitFormBoundary' + Math.random().toString(36).substr(2);
+  let result = '';
+  // 这是 react-native 中的实现，这里面是存在这个方法的
+  const parts = (formData as any).getParts();
+  for (const part of parts) {
+    result += `--${boundary}\r\n`;
+    result += `Content-Disposition: ${part.headers['content-disposition']}\r\n`;
+    if (part.headers['content-type']) {
+      result += `Content-Type: ${part.headers['content-type']}\r\n`;
+    }
+    const value = 'string' in part ? part.string : part.uri;
+    result += `Content-Length: ${value.length}\r\n\r\n`;
+    result += `${value}\r\n`;
+  }
+  result += `--${boundary}--\r\n`;
+  return result;
 }
