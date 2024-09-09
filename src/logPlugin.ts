@@ -1,4 +1,4 @@
-import Server from './server';
+import Server from './Server';
 import { createClassWithErrorHandling } from './utils';
 import { httpInterceptor } from './HTTPInterceptor';
 
