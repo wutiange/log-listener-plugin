@@ -147,8 +147,12 @@ class HTTPInterceptor {
     data: Partial<HttpRequestInfo>,
   ) => {
     this.userListeners.forEach(async ([name, listener]) => {
-      if (name === eventName) {
-        await listener(data);
+      try {
+        if (name === eventName) {
+          await listener(data);
+        }
+      } catch (error: any) {
+        console.warn(`eventName=${eventName}, error=${error?.message}`)
       }
     });
   };
@@ -310,6 +314,15 @@ class HTTPInterceptor {
     }
     XHRInterceptor.disableInterception();
     this.enabled = false;
+  };
+
+  reset = () => {
+    this.disable();
+    this.removeAllListener();
+    this.ignoredHosts = undefined;
+    this.ignoredUrls = undefined;
+    this.ignoredPatterns = undefined;
+    this.allRequests.clear();
   };
 }
 

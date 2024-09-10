@@ -1,72 +1,44 @@
-const EMPTY = 0;
-const LOADING = 1;
-const DONE = 2;
-
 class FileReader {
-  EMPTY = EMPTY;
-  LOADING = LOADING;
-  DONE = DONE;
-
-  error = null;
-  readyState = EMPTY;
-  result = null;
-  
-  onloadstart = null;
-  onprogress = null;
-  onload = null;
-  onabort = null;
-  onerror = null;
-  onloadend = null;
-
-  abort() {
-    this.readyState = DONE;
+  constructor() {
     this.result = null;
-    if (this.onabort) this.onabort();
-    if (this.onloadend) this.onloadend();
+    this.error = null;
+    this.readyState = FileReader.EMPTY;
+  }
+
+  static EMPTY = 0;
+  static LOADING = 1;
+  static DONE = 2;
+
+  addEventListener(event, callback) {
+    this[`on${event}`] = callback;
+  }
+
+  removeEventListener(event, callback) {
+    if (this[`on${event}`] === callback) {
+      this[`on${event}`] = null;
+    }
+  }
+
+  readAsText(blob) {
+    this._read(blob, 'text');
   }
 
   readAsArrayBuffer(blob) {
-    this._read(blob, 'arrayBuffer');
+    this._read(blob, 'arraybuffer');
   }
 
-  readAsBinaryString(blob) {
-    this._read(blob, 'binaryString');
-  }
-
-  readAsDataURL(blob) {
-    this._read(blob, 'dataURL');
-  }
-
-  readAsText(blob, encoding) {
-    this._read(blob, 'text', encoding);
-  }
-
-  _read(blob, format, encoding) {
-    this.readyState = LOADING;
-    if (this.onloadstart) this.onloadstart();
-
-    // 模拟异步读取过程
+  _read(blob, resultType) {
+    this.readyState = FileReader.LOADING;
     setTimeout(() => {
-      this.readyState = DONE;
-      // 根据不同的格式返回模拟数据
-      switch (format) {
-        case 'arrayBuffer':
-          this.result = new ArrayBuffer(8);
-          break;
-        case 'binaryString':
-          this.result = 'binaryStringContent';
-          break;
-        case 'dataURL':
-          this.result = 'data:text/plain;base64,dGVzdA==';
-          break;
-        case 'text':
-          this.result = 'Hello, this is a mock text content.';
-          break;
+      this.readyState = FileReader.DONE;
+      if (resultType === 'text') {
+        this.result = blob.text();
+      } else if (resultType === 'arraybuffer') {
+        // 这里我们简单地返回一个空的 ArrayBuffer
+        this.result = new ArrayBuffer(0);
       }
-
-      if (this.onload) this.onload();
-      if (this.onloadend) this.onloadend();
-    }, 100); // 模拟 100ms 的读取时间
+      if (this.onload) this.onload({target: this});
+    }, 0);
   }
 }
 

@@ -1,28 +1,38 @@
-// __mocks__/react-native/XHRInterceptor.js
+// __mocks__/react-native/Libraries/XHRInterceptor.js
 
-const XHRInterceptor = {
-  isInterceptorEnabled: false,
-  requestInterceptors: [],
-  responseInterceptors: [],
-  responseErrorInterceptors: [],
+class XHRInterceptor {
+  static _isInterceptorEnabled = false
+  static openCallback = null
+  static requestHeaderCallback = null
+  static headerReceivedCallback = null
+  static sendCallback = null
+  static responseCallback = null
   
-  setResponseCallback: jest.fn(),
-  setRequestCallback: jest.fn(),
-  setSendCallback: jest.fn(),
-  setHeaderReceivedCallback: jest.fn(),
-  setResponseErrorCallback: jest.fn(),
+  static setOpenCallback = jest.fn((callback) => {
+    XHRInterceptor.openCallback = callback;
+  })
+  static setRequestHeaderCallback = jest.fn((callback) => {
+    XHRInterceptor.requestHeaderCallback = callback;
+  })
+  static setHeaderReceivedCallback = jest.fn((callback) => {
+    XHRInterceptor.headerReceivedCallback = callback;
+  })
+  static setSendCallback = jest.fn((callback) => {
+    XHRInterceptor.sendCallback = callback;
+  })
+  static setResponseCallback = jest.fn((callback) => {
+    XHRInterceptor.responseCallback = callback;
+  })
   
-  enableInterception: jest.fn(() => {
-    XHRInterceptor.isInterceptorEnabled = true;
-  }),
+  static enableInterception = jest.fn(() => {
+    XHRInterceptor._isInterceptorEnabled = true;
+  })
   
-  disableInterception: jest.fn(() => {
-    XHRInterceptor.isInterceptorEnabled = false;
-  }),
+  static disableInterception = jest.fn(() => {
+    XHRInterceptor._isInterceptorEnabled = false;
+  })
   
-  isInterceptorEnabled: jest.fn(() => XHRInterceptor.isInterceptorEnabled),
-  
-  // 添加其他可能需要的方法
+  static isInterceptorEnabled = jest.fn(() => XHRInterceptor._isInterceptorEnabled)
 };
 
 module.exports = XHRInterceptor;
