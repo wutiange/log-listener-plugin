@@ -27,10 +27,10 @@
     }
   },
   "scripts": {
-    "build": "npx yarn test && tsc",
+    "build": "npm run test && tsc",
     "dev": "ts-node ./index.ts",
-    "publish-alpha": "npx yarn build && npm publish --access public --tag alpha",
-    "prepublishOnly": "yarn build",
+    "publish-alpha": "npm publish --access public --tag alpha",
+    "prepublishOnly": "npm run build",
     "test": "jest"
   },
   "devDependencies": {
