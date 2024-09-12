@@ -11,7 +11,8 @@
     "moduleResolution": "NodeNext",
     "allowJs": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
   },
   "exclude": ["node_modules", "**/*.spec.ts"],
   "include": [
