@@ -4,7 +4,6 @@ import {Button, SafeAreaView, StyleSheet} from 'react-native';
 const App = () => {
   const onPressLog = () => {
     console.log('开始测试简单日志');
-    console.log(new Error('打印日志'));
   };
 
   const onPressWarn = () => {

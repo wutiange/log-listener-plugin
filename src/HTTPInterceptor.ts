@@ -255,6 +255,21 @@ class HTTPInterceptor {
     this.listenerHandle('send', currentRequest);
   };
 
+  setIgnoredUrls = (ignoredUrls: string[]) => {
+    if (ignoredUrls?.length) {
+      if (
+        !Array.isArray(ignoredUrls) ||
+        typeof ignoredUrls[0] !== 'string'
+      ) {
+        console.warn(
+          'ignoredUrls must be an array of strings. The logger has not been started.',
+        );
+        return;
+      }
+      this.ignoredUrls = new Set(ignoredUrls);
+    }
+  }
+
   enable = (options?: StartNetworkLoggingOptions) => {
     try {
       if (
@@ -285,19 +300,7 @@ class HTTPInterceptor {
       if (options?.ignoredPatterns) {
         this.ignoredPatterns = options.ignoredPatterns;
       }
-
-      if (options?.ignoredUrls) {
-        if (
-          !Array.isArray(options.ignoredUrls) ||
-          typeof options.ignoredUrls[0] !== 'string'
-        ) {
-          console.warn(
-            'ignoredUrls must be an array of strings. The logger has not been started.',
-          );
-          return;
-        }
-        this.ignoredUrls = new Set(options.ignoredUrls);
-      }
+      this.setIgnoredUrls(options?.ignoredUrls)
       XHRInterceptor.setOpenCallback(this.openHandle);
       XHRInterceptor.setRequestHeaderCallback(this.requestHeaderHandle);
       XHRInterceptor.setHeaderReceivedCallback(this.headerReceivedHandle);

@@ -1,4 +1,10 @@
-export const [log, warn, error] = [console.log, console.warn, console.error];
+export enum Level {
+  LOG = 'log',
+  WARN = 'warn',
+  ERROR = 'error',
+}
 
-// @ts-ignore
-export const tempFetch = global.fetch as typeof fetch;
+export enum Tag {
+  LOG_PLUGIN_INTERNAL_ERROR = 'log-plugin-internal-error',
+  DEFAULT = 'default',
+}

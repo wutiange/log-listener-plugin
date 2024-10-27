@@ -1,42 +1,75 @@
-import {hasPort, sleep} from './utils';
-const DEFAULT_PORT = 27751
-class Server {
-  private baseUrl = '';
-  private timeout: number;
+import { hasPort, sleep } from "./utils";
+import Zeroconf from "react-native-zeroconf";
+import { Level, Tag } from "./common";
 
-  constructor(url: string, timeout: number = 3000) {
-    this.updateUrl(url);
+const DEFAULT_PORT = 27751;
+class Server {
+  private baseUrlObj: Record<string, string> = {};
+  private timeout: number;
+  private baseData: Record<string, any> = {};
+  private urlsListener: (urls: string[]) => void;
+
+  constructor(url?: string, timeout: number = 30000) {
+    if (url) {
+      this.updateUrl(url);
+    }
     this.timeout = timeout;
+    this.handleZeroConf();
+  }
+
+  addUrlsListener = (onNewUrlCallback: (urls: string[]) => void) => {
+    this.urlsListener = onNewUrlCallback;
+  };
+
+  private async handleZeroConf() {
+    try {
+      const Zeroconf = require("react-native-zeroconf")?.default;
+      if (!Zeroconf) {
+        return;
+      }
+      // @ts-ignore
+      const zeroconf: Zeroconf = new Zeroconf();
+
+      zeroconf.on("resolved", (service) => {
+        if (service?.txt?.uniqueId) {
+          this.baseUrlObj[
+            service.txt.uniqueId
+          ] = `http://${service.host}:${service.port}`;
+          if (this.urlsListener) {
+            this.urlsListener(this.getUrls());
+          }
+        }
+      });
+
+      zeroconf.scan("http");
+    } catch (error: any) {}
   }
 
   updateTimeout(timeout = 3000) {
     this.timeout = timeout;
   }
 
-  private getPort() {
-    if (hasPort(this.baseUrl)) {
-      return ''
-    }
-    return DEFAULT_PORT;
-  }
-
-  getUrl() {
-    return `${this.baseUrl}:${this.getPort()}`
-  }
-
-  private async send(path: string, data: Record<string, any>) {
-    try {
-      if (!this.baseUrl) {
-        return null;
+  getUrls() {
+    return Object.values(this.baseUrlObj).map((e) => {
+      if (hasPort(e)) {
+        return e;
       }
-      const common = require('./common');
-      const result = await Promise.race([
-        common.tempFetch(`${this.getUrl()}/${path}`, {
-          method: 'POST',
+      return `${e}:${DEFAULT_PORT}`;
+    });
+  }
+
+  private send = async (
+    path: string,
+    data: Record<string, any>
+  ): Promise<void> => {
+    const request = async (url: string, _data: Record<string, any>) => {
+      await Promise.race([
+        fetch(`${url}/${path}`, {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json;charset=utf-8',
+            "Content-Type": "application/json;charset=utf-8",
           },
-          body: JSON.stringify(data, (_, val) => {
+          body: JSON.stringify({ ...this.baseData, ..._data }, (_, val) => {
             if (val instanceof Error) {
               return val.toString();
             }
@@ -45,26 +78,45 @@ class Server {
         }),
         sleep(this.timeout, true),
       ]);
-      if (result instanceof Response) {
-        return result.text();
+    };
+    try {
+      if (Object.keys(this.baseUrlObj).length === 0) {
+        return;
       }
-      return null;
-    } catch (error) {
-      return null;
+      await Promise.all(this.getUrls().map(async (e) => request(e, data)));
+    } catch (error: any) {
+      const errData = {
+        message: [
+          `${
+            error?.message ?? error
+          }--->这是@wutiange/log-listener-plugin内部错误，请提issue反馈，issue地址：https://github.com/wutiange/log-listener-plugin/issues`,
+        ],
+        tag: Tag.LOG_PLUGIN_INTERNAL_ERROR,
+        level: Level.ERROR,
+        createTime: Date.now(),
+      };
+      Object.values(this.baseUrlObj).map(async (e) =>
+        request(e, errData).catch((_) => {})
+      );
     }
-  }
+  };
 
   updateUrl(url: string) {
-    this.baseUrl = url;
+    const tempUrl = url.includes("http") ? url : `http://${url}`;
+    this.baseUrlObj["Default"] = tempUrl;
   }
 
-  async log(data: Record<string, any>) {
-    return this.send('log', data);
+  updateBaseData(data: Record<string, any>) {
+    this.baseData = data;
   }
 
-  async network(data: Record<string, any>) {
-    return this.send('network', data);
-  }
+  log = async (data: Record<string, any>) => {
+    return this.send("log", data);
+  };
+
+  network = async (data: Record<string, any>) => {
+    return this.send("network", data);
+  };
 }
 
 export default Server;
