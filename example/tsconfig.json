@@ -1,8 +1,15 @@
 {
-  "extends": "@react-native/typescript-config/tsconfig.json",
+  "extends": "../tsconfig",
   "compilerOptions": {
     "paths": {
       "@wutiange/log-listener-plugin": ["../index"]
     },
   },
+  "include": [
+    "src",
+    "index.js"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }
