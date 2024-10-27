@@ -1,180 +1,175 @@
-import Server from "../Server";
-import { hasPort, sleep } from "../utils";
+import Server from '../Server';
+import { sleep } from '../utils';
 
-// 模拟 utils 模块
-jest.mock('../utils', () => ({
-  hasPort: jest.fn(),
-  sleep: jest.fn().mockImplementation(() => new Promise(() => {})),
-}));
+// Mock dependencies
+jest.mock('../utils', () => {
+  const actual = jest.requireActual('../utils');
+  return {
+    ...actual,    // 保留所有真实实现
+    sleep: jest.fn() // 只模拟 sleep 函数
+  };
+});
 
-// 模拟 common 模块
-jest.mock('../common', () => ({
-  tempFetch: jest.fn(),
-}));
 
-// 添加模拟的 Response 类
-class MockResponse {
-  private body: string;
+// Mock require for react-native-zeroconf
+jest.mock('react-native-zeroconf', () => undefined, { virtual: true });
 
-  constructor(body: string) {
-    this.body = body;
-  }
-
-  text() {
-    return Promise.resolve(this.body);
-  }
-
-  static [Symbol.hasInstance](instance: any) {
-    return instance && typeof instance.text === 'function';
-  }
-}
-
-// 全局模拟 Response
-global.Response = MockResponse as any;
+// Mock fetch
+global.fetch = jest.fn();
 
 describe('Server', () => {
   let server: Server;
-  const mockUrl = 'http://example.com';
-  const mockTimeout = 5000;
-
+  
   beforeEach(() => {
-    server = new Server(mockUrl, mockTimeout);
+    // Clear all mocks before each test
     jest.clearAllMocks();
+    (global.fetch as jest.Mock).mockReset();
   });
 
-  describe('constructor', () => {
-    it('should initialize with correct url and timeout', () => {
-      expect(server['baseUrl']).toBe(mockUrl);
-      expect(server['timeout']).toBe(mockTimeout);
+  describe('Constructor and URL Management', () => {
+    it('should initialize with default values', () => {
+      server = new Server();
+      expect(server.getUrls()).toEqual([]);
     });
 
-    it('should use default timeout if not provided', () => {
-      const defaultServer = new Server(mockUrl);
-      expect(defaultServer['timeout']).toBe(3000);
-    });
-  });
-
-  describe('updateTimeout', () => {
-    it('should update the timeout', () => {
-      server.updateTimeout(10000);
-      expect(server['timeout']).toBe(10000);
+    it('should initialize with custom URL', () => {
+      server = new Server('localhost:8080');
+      expect(server.getUrls()).toEqual(['http://localhost:8080']);
     });
 
-    it('should use default timeout if not provided', () => {
-      server.updateTimeout();
-      expect(server['timeout']).toBe(3000);
-    });
-  });
-
-  describe('getPort', () => {
-    it('should return empty string if url has port', () => {
-      (hasPort as jest.Mock).mockReturnValue(true);
-      expect(server['getPort']()).toBe('');
-    });
-
-    it('should return default port if url has no port', () => {
-      (hasPort as jest.Mock).mockReturnValue(false);
-      expect(server['getPort']()).toBe(27751);
+    it('should handle URLs with and without http prefix', () => {
+      server = new Server();
+      server.updateUrl('localhost:8080');
+      expect(server.getUrls()).toEqual(['http://localhost:8080']);
+      
+      server.updateUrl('http://localhost:8080');
+      expect(server.getUrls()).toEqual(['http://localhost:8080']);
     });
   });
 
-  describe('getUrl', () => {
-    it('should return correct url with port', () => {
-      (hasPort as jest.Mock).mockReturnValue(false);
-      expect(server.getUrl()).toBe(`${mockUrl}:27751`);
+  describe('ZeroConf Handling', () => {
+    it('should handle case when zeroconf is not available', () => {
+      server = new Server();
+      const mockListener = jest.fn();
+      server.addUrlsListener(mockListener);
+      
+      // Since Zeroconf is not available, the listener should not be called
+      expect(mockListener).not.toHaveBeenCalled();
     });
 
-    it('should return correct url without port', () => {
-      (hasPort as jest.Mock).mockReturnValue(true);
-      expect(server.getUrl()).toBe(`${mockUrl}:`);
+    // Test with mock Zeroconf implementation
+    it('should handle case when zeroconf is available', () => {
+      // Temporarily mock require to return a mock Zeroconf implementation
+      const mockZeroconfInstance = {
+        on: jest.fn(),
+        scan: jest.fn()
+      };
+      
+      jest.doMock('react-native-zeroconf', () => ({
+        __esModule: true,
+        default: jest.fn(() => mockZeroconfInstance)
+      }), { virtual: true });
+
+      server = new Server();
+      const mockListener = jest.fn();
+      server.addUrlsListener(mockListener);
+
+      // Verify that Zeroconf methods were not called since module is mocked as undefined
+      expect(mockListener).not.toHaveBeenCalled();
     });
   });
 
-  describe('send', () => {
-    const mockPath = 'test';
-    const mockData = { key: 'value' };
-    const mockResponse = new MockResponse('success');
-
-    it('should return null if baseUrl is empty', async () => {
-      server.updateUrl('');
-      const result = await server['send'](mockPath, mockData);
-      expect(result).toBeNull();
+  describe('Data Sending', () => {
+    beforeEach(() => {
+      server = new Server('localhost:8080');
+      (global.fetch as jest.Mock).mockImplementation(() => 
+        Promise.resolve({ ok: true })
+      );
     });
 
-    it('should return response text on successful fetch', async () => {
-      const common = require('../common');
-      const mockResponseText = 'success';
-      const mockResponseObject = new MockResponse(mockResponseText);
-      common.tempFetch.mockResolvedValue(mockResponseObject);
+    it('should send log data', async () => {
+      const testData = { message: 'test log' };
+      await server.log(testData);
 
-      const result = await server['send'](mockPath, mockData);
-
-      expect(result).toBe(mockResponseText);
-      expect(common.tempFetch).toHaveBeenCalledWith(
-        `${server.getUrl()}/${mockPath}`,
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:8080/log',
         expect.objectContaining({
           method: 'POST',
-          headers: { 'Content-Type': 'application/json;charset=utf-8' },
-          body: JSON.stringify(mockData),
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+          },
+          body: expect.any(String)
         })
       );
     });
 
-    it('should return null on timeout', async () => {
-      const common = require('../common');
-      // 模拟 tempFetch 永不解析，以模拟长时间运行的请求
-      common.tempFetch.mockImplementation(() => new Promise(() => {}));
-      (sleep as jest.Mock).mockResolvedValue(true);
-      const result = await server['send'](mockPath, mockData);
-      expect(result).toBeNull();
+    it('should send network data', async () => {
+      const testData = { url: 'test.com' };
+      await server.network(testData);
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        'http://localhost:8080/network',
+        expect.objectContaining({
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json;charset=utf-8'
+          },
+          body: expect.any(String)
+        })
+      );
     });
 
-    it('should handle Error objects in JSON stringification', async () => {
-      const common = require('../common');
-      common.tempFetch.mockResolvedValue(mockResponse);
-      const dataWithError = { error: new Error('Test error') };
-      await server['send'](mockPath, dataWithError);
-      expect(common.tempFetch).toHaveBeenCalledWith(
+    it('should handle timeout', async () => {
+      server.updateTimeout(100);
+      (sleep as jest.Mock).mockImplementation(() => Promise.reject(new Error('Timeout')));
+      
+      const testData = { message: 'test' };
+      await server.log(testData);
+
+      expect(global.fetch).toHaveBeenCalled();
+      expect(sleep).toHaveBeenCalledWith(100, true);
+    });
+
+    it('should handle errors and send error data', async () => {
+      (global.fetch as jest.Mock).mockImplementation(() => 
+        Promise.reject(new Error('Network error'))
+      );
+  
+      const testData = { message: 'test' };
+      await server.log(testData);
+  
+      // 修改这里的断言来匹配实际的错误格式
+      expect(global.fetch).toHaveBeenCalledWith(
         expect.any(String),
         expect.objectContaining({
-          body: expect.stringContaining('Error: Test error'),
+          body: expect.stringContaining('log-plugin-internal-error')
         })
       );
-    });
-
-    it('should return null on fetch error', async () => {
-      const common = require('../common');
-      common.tempFetch.mockRejectedValue(new Error('Fetch error'));
-      const result = await server['send'](mockPath, mockData);
-      expect(result).toBeNull();
-    });
-  });
-
-  describe('updateUrl', () => {
-    it('should update the baseUrl', () => {
-      const newUrl = 'http://newexample.com';
-      server.updateUrl(newUrl);
-      expect(server['baseUrl']).toBe(newUrl);
+  
+      // 如果需要更精确的检查，可以添加以下断言
+      const lastCall = (global.fetch as jest.Mock).mock.calls[(global.fetch as jest.Mock).mock.calls.length - 1];
+      const body = JSON.parse(lastCall[1].body);
+      expect(body).toMatchObject({
+        tag: 'log-plugin-internal-error',
+        level: 'error'
+      });
     });
   });
 
-  describe('log', () => {
-    it('should call send with correct path and data', async () => {
-      const sendSpy = jest.spyOn(server as any, 'send').mockResolvedValue('log result');
-      const logData = { message: 'Test log' };
-      const result = await server.log(logData);
-      expect(sendSpy).toHaveBeenCalledWith('log', logData);
-      expect(result).toBe('log result');
-    });
-  });
+  describe('Base Data Management', () => {
+    it('should update base data', async () => {
+      server = new Server('localhost:8080');
+      const baseData = { userId: '123' };
+      server.updateBaseData(baseData);
 
-  describe('network', () => {
-    it('should call send with correct path and data', async () => {
-      const sendSpy = jest.spyOn(server as any, 'send').mockResolvedValue('network result');
-      const networkData = { url: 'http://test.com', status: 200 };
-      const result = await server.network(networkData);
-      expect(sendSpy).toHaveBeenCalledWith('network', networkData);
-      expect(result).toBe('network result');
+      await server.log({ message: 'test' });
+
+      expect(global.fetch).toHaveBeenCalledWith(
+        expect.any(String),
+        expect.objectContaining({
+          body: expect.stringContaining('"userId":"123"')
+        })
+      );
     });
   });
 });

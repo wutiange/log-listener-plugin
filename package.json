@@ -19,14 +19,6 @@
     "charles"
   ],
   "private": false,
-  "exports": {
-    "console": {
-      "default": "./dist/console.js"
-    },
-    "fetch": {
-      "default": "./dist/fetch.js"
-    }
-  },
   "scripts": {
     "build": "npm run test && tsc",
     "dev": "ts-node ./index.ts",
