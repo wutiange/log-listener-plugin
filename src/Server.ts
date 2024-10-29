@@ -29,9 +29,10 @@ class Server {
       }
       // @ts-ignore
       const zeroconf: Zeroconf = new Zeroconf();
-
+      const id = `${Date.now().toString(16)}-${Math.random().toString(16)}`;
+      zeroconf.publishService("http", "tcp", "local.", "log-listener", DEFAULT_PORT, {id})
       zeroconf.on("resolved", (service) => {
-        if (service?.txt?.uniqueId) {
+        if (service?.txt?.uniqueId && service?.txt?.id === id) {
           this.baseUrlObj[
             service.txt.uniqueId
           ] = `http://${service.host}:${service.port}`;
@@ -40,7 +41,6 @@ class Server {
           }
         }
       });
-
       zeroconf.scan("http");
     } catch (error: any) {}
   }
