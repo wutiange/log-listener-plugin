@@ -39,7 +39,8 @@
   },
   "peerDependencies": {
     "react-native": "*",
-    "react-native-zeroconf": "^0.13.8"
+    "react-native-zeroconf": "^0.13.8",
+    "react-native-device-info": "^14.0.0"
   },
   "files": [
     "package.json",

@@ -1,6 +1,7 @@
 import { hasPort, sleep } from "./utils";
 import Zeroconf from "react-native-zeroconf";
-import { Level, Tag } from "./common";
+import { getBaseData, Level, Tag } from "./common";
+import logger from "./logger";
 
 const DEFAULT_PORT = 27751;
 class Server {
@@ -8,12 +9,14 @@ class Server {
   private timeout: number;
   private baseData: Record<string, any> = {};
   private urlsListener: (urls: string[]) => void;
+  private innerBaseData: Record<string, string> = {};
 
   constructor(url?: string, timeout: number = 30000) {
     if (url) {
       this.updateUrl(url);
     }
     this.timeout = timeout;
+    this.innerBaseData = getBaseData();
     this.handleZeroConf();
   }
 
@@ -30,15 +33,33 @@ class Server {
       // @ts-ignore
       const zeroconf: Zeroconf = new Zeroconf();
       const id = `${Date.now().toString(16)}-${Math.random().toString(16)}`;
-      zeroconf.publishService("http", "tcp", "local.", "log-listener", DEFAULT_PORT, {id})
+      zeroconf.publishService(
+        "http",
+        "tcp",
+        "local.",
+        `${this.innerBaseData.model ?? "log-record"}`,
+        DEFAULT_PORT,
+        { id }
+      );
       zeroconf.on("resolved", (service) => {
         if (service?.txt?.uniqueId && service?.txt?.id === id) {
-          this.baseUrlObj[
-            service.txt.uniqueId
-          ] = `http://${service.host}:${service.port}`;
+          this.baseUrlObj[service.name] = `http://${service.host}:${service.port}`;
           if (this.urlsListener) {
             this.urlsListener(this.getUrls());
           }
+        }
+      });
+      zeroconf.on("unpublished", (server) => {
+        logger.log("unpublished", server);
+      });
+      zeroconf.on("error", (err) => {
+        logger.log("error", err);
+      });
+      zeroconf.on("remove", (name) => {
+        logger.log("remove", name);
+        delete this.baseUrlObj[name]
+        if (this.urlsListener) {
+          this.urlsListener(this.getUrls());
         }
       });
       zeroconf.scan("http");
@@ -69,12 +90,15 @@ class Server {
           headers: {
             "Content-Type": "application/json;charset=utf-8",
           },
-          body: JSON.stringify({ ...this.baseData, ..._data }, (_, val) => {
-            if (val instanceof Error) {
-              return val.toString();
+          body: JSON.stringify(
+            { ...this.innerBaseData, ...this.baseData, ..._data },
+            (_, val) => {
+              if (val instanceof Error) {
+                return val.toString();
+              }
+              return val;
             }
-            return val;
-          }),
+          ),
         }),
         sleep(this.timeout, true),
       ]);
