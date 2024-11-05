@@ -25,3 +25,14 @@ export const getBaseData = (): Record<string, string> => {
     return {}
   }
 }
+
+export const getDefaultStorage = (): Storage => {
+  try {
+    const AsyncStorage = require("@react-native-async-storage/async-storage")?.default;
+    return AsyncStorage;
+  } catch (error) {
+    return null;
+  }
+}
+
+export const URLS_KEY = 'log-listener-plugin-urls$$key'

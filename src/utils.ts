@@ -110,9 +110,3 @@ export function formDataToString(formData: FormData): string {
 }
 
 
-interface ModuleResult<T> {
-  module: T | null;
-  version: string | null;
-  isInstalled: boolean;
-  error?: string;
-}

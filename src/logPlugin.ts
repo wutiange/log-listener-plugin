@@ -1,20 +1,44 @@
 import Server from './Server';
 import { createClassWithErrorHandling } from './utils';
 import { httpInterceptor } from './HTTPInterceptor';
-import { Level, Tag } from './common';
+import { getDefaultStorage, Level, Tag, URLS_KEY } from './common';
 import logger from './logger';
 
 class LogPlugin {
   private server: Server | null = null;
   private timeout: number | null = null;
   private isAuto = false
+  private storage: Storage | null = getDefaultStorage();
 
   constructor() {
-    this.server = new Server();
-    this.server.addUrlsListener(_ => {
+    this.init()
+  }
+
+  init = async () => {
+    if (!this.storage) {
+      this.server = new Server();
+    } else {
+      const urlsStr = await this.storage.getItem(URLS_KEY)
+      if (urlsStr) {
+        const urls = JSON.parse(urlsStr)
+        this.server = new Server(urls);
+      } else {
+        this.server = new Server();
+      }
+    }
+
+    
+    this.server.addUrlsListener((_, urlsObj) => {
+      if (this.storage) {
+        this.storage.setItem(URLS_KEY, JSON.stringify(urlsObj))
+      }
       httpInterceptor.setIgnoredUrls(this.handleIgnoredUrls())
     })
   }
+
+  config = ({ storage }: { storage: Storage }) => {
+    this.storage = storage;
+  };
 
   auto = () => {
     this.startRecordNetwork();

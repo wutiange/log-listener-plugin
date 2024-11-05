@@ -8,19 +8,21 @@ class Server {
   private baseUrlObj: Record<string, string> = {};
   private timeout: number;
   private baseData: Record<string, any> = {};
-  private urlsListener: (urls: string[]) => void;
+  private urlsListener: (urls: string[], urlsObj: Record<string, string>) => void;
   private innerBaseData: Record<string, string> = {};
 
-  constructor(url?: string, timeout: number = 30000) {
-    if (url) {
+  constructor(url?: string | Record<string, string>, timeout: number = 30000) {
+    if (typeof url === 'string') {
       this.updateUrl(url);
+    } else {
+      this.setBaseUrlObj(url)
     }
     this.timeout = timeout;
     this.innerBaseData = getBaseData();
     this.handleZeroConf();
   }
 
-  addUrlsListener = (onNewUrlCallback: (urls: string[]) => void) => {
+  addUrlsListener = (onNewUrlCallback: (urls: string[], urlsObj: Record<string, string>) => void) => {
     this.urlsListener = onNewUrlCallback;
   };
 
@@ -54,7 +56,7 @@ class Server {
           }
           this.baseUrlObj[token] = url;
           if (this.urlsListener) {
-            this.urlsListener(this.getUrls());
+            this.urlsListener(this.getUrls(), this.baseUrlObj);
           }
         }
       });
@@ -126,6 +128,10 @@ class Server {
   updateUrl(url: string) {
     const tempUrl = url.includes("http") ? url : `http://${url}`;
     this.baseUrlObj["Default"] = tempUrl;
+  }
+
+  setBaseUrlObj(urlObj: Record<string, string>) {
+    this.baseUrlObj = urlObj;
   }
 
   updateBaseData(data: Record<string, any>) {
