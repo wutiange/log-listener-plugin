@@ -32,38 +32,36 @@ class Server {
       }
       // @ts-ignore
       const zeroconf: Zeroconf = new Zeroconf();
-      const id = `${Date.now().toString(16)}-${Math.random().toString(16)}`;
-      zeroconf.publishService(
-        "http",
-        "tcp",
-        "local.",
-        `${this.innerBaseData.model ?? "log-record"}`,
-        DEFAULT_PORT,
-        { id }
-      );
-      zeroconf.on("resolved", (service) => {
-        if (service?.txt?.uniqueId && service?.txt?.id === id) {
-          this.baseUrlObj[service.name] = `http://${service.host}:${service.port}`;
+      zeroconf.publishService("http", "tcp", ".local.", "232", 12345)
+      zeroconf.on("resolved", async (service) => {
+        logger.log("resolved-------", service);
+        const { path, token } = service.txt ?? {};
+        if (path && token) {
+          const url = `http://${service.host}:${service.port}`
+          const response = await fetch(`${url}/${path}`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json;charset=utf-8",
+            },
+            body: JSON.stringify({ token, model: this.innerBaseData.model, id: `${Date.now().toString(16)}-${Math.random().toString(16)}` }),
+          })
+          if (response.status !== 200) {
+            return;
+          }
+          const json = await response.json();
+          if (json.code !== 0) {
+            return;
+          }
+          this.baseUrlObj[token] = url;
           if (this.urlsListener) {
             this.urlsListener(this.getUrls());
           }
         }
       });
-      zeroconf.on("unpublished", (server) => {
-        logger.log("unpublished", server);
-      });
-      zeroconf.on("error", (err) => {
-        logger.log("error", err);
-      });
-      zeroconf.on("remove", (name) => {
-        logger.log("remove", name);
-        delete this.baseUrlObj[name]
-        if (this.urlsListener) {
-          this.urlsListener(this.getUrls());
-        }
-      });
-      zeroconf.scan("http");
-    } catch (error: any) {}
+      zeroconf.scan("http", "tcp");
+    } catch (error: any) {
+      logger.warn("zeroconf error", error);
+    }
   }
 
   updateTimeout(timeout = 3000) {

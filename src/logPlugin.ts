@@ -57,7 +57,7 @@ class LogPlugin {
     let ignoredUrls: string[] = []
     if (urls?.length) {
       ignoredUrls = urls.reduce((acc, url) => {
-        acc.push(`${url}/log`, `${url}/network`)
+        acc.push(`${url}/log`, `${url}/network`, `${url}/join`)
         return acc
       }, [] as string[])
     }
