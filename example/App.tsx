@@ -45,7 +45,7 @@ const App = () => {
           fetch('http://127.0.0.1:5050/get')
             .then(res => res.json())
             .then(res => console.log(res))
-            .catch(err => console.log(err));
+            .catch(err => console.log(err, '----======'));
         }}
       />
     </SafeAreaView>

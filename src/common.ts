@@ -36,3 +36,5 @@ export const getDefaultStorage = (): Storage => {
 }
 
 export const URLS_KEY = 'log-listener-plugin-urls$$key'
+
+export const LOG_KEY = '[@wutiange/log-listener-plugin 日志]'

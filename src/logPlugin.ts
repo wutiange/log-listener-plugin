@@ -14,7 +14,7 @@ class LogPlugin {
     this.init()
   }
 
-  init = async () => {
+  private init = async () => {
     if (!this.storage) {
       this.server = new Server();
     } else {
