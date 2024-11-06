@@ -1,8 +1,9 @@
 import { hasPort, sleep } from "./utils";
 import Zeroconf from "react-native-zeroconf";
-import { getBaseData, Level, LOG_KEY, Tag } from "./common";
+import { getBaseData, getErrMsg, LOG_KEY } from "./common";
 import logger from "./logger";
 import md5 from 'crypto-js/md5';
+
 
 const DEFAULT_PORT = 27751;
 class Server {
@@ -83,7 +84,7 @@ class Server {
       });
       zeroconf.scan("http", "tcp");
     } catch (error: any) {
-      logger.warn(LOG_KEY, "zeroconf扫描或处理相关逻辑失败---", error);
+      logger.warn(LOG_KEY, "zeroconf扫描或处理相关逻辑失败或者您根本就没有安装 react-native-zeroconf ，如果您没有安装，那么您将无法使用发现功能", error);
     }
   }
 
@@ -130,18 +131,8 @@ class Server {
       }
       await Promise.all(this.getUrls().map(async (e) => request(e, data)));
     } catch (error: any) {
-      const errData = {
-        message: [
-          `${
-            error?.message ?? error
-          }--->这是@wutiange/log-listener-plugin内部错误，请提issue反馈，issue地址：https://github.com/wutiange/log-listener-plugin/issues`,
-        ],
-        tag: Tag.LOG_PLUGIN_INTERNAL_ERROR,
-        level: Level.ERROR,
-        createTime: Date.now(),
-      };
       Object.values(this.baseUrlObj).map(async (e) =>
-        request(e, errData).catch((_) => {})
+        request(e, getErrMsg(error)).catch((_) => {})
       );
     }
   };

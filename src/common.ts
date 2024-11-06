@@ -1,3 +1,5 @@
+import logger from "./logger";
+
 export enum Level {
   LOG = 'log',
   WARN = 'warn',
@@ -9,20 +11,35 @@ export enum Tag {
   DEFAULT = 'default',
 }
 
+const getDefaultDeviceINfo = () => {
+  try {
+    const {Platform} = require('react-native')
+    return {
+      SystemName: Platform.OS,
+      Version: Platform.Version,
+      ...Platform.constants
+    }
+  } catch (error) {
+    logger.warn(LOG_KEY, '这个插件只能在 react-native 中使用')
+    return {}
+  }
+}
 
 export const getBaseData = (): Record<string, string> => {
+  
   try {
     const DeviceInfo = require("react-native-device-info")?.default;
     return {
-      brand: DeviceInfo.getBrand(),
-      model: DeviceInfo.getModel(),
-      appVersion: DeviceInfo.getVersion(),
-      carrier: DeviceInfo.getCarrierSync(),
-      manufacturer: DeviceInfo.getManufacturerSync(),
-      systemName: DeviceInfo.getSystemName()
+      Brand: DeviceInfo.getBrand(),
+      Model: DeviceInfo.getModel(),
+      AppVersion: DeviceInfo.getVersion(),
+      Carrier: DeviceInfo.getCarrierSync(),
+      Manufacturer: DeviceInfo.getManufacturerSync(),
+      SystemName: DeviceInfo.getSystemName(),
+      ...getDefaultDeviceINfo()
     };
   } catch (error) {
-    return {}
+    return getDefaultDeviceINfo()
   }
 }
 
@@ -38,3 +55,16 @@ export const getDefaultStorage = (): Storage => {
 export const URLS_KEY = 'log-listener-plugin-urls$$key'
 
 export const LOG_KEY = '[@wutiange/log-listener-plugin 日志]'
+
+export const getErrMsg = (error: any) => {
+  return {
+    message: [
+      `${
+        error?.message ?? error
+      }--->这是@wutiange/log-listener-plugin内部错误，请提issue反馈，issue地址：https://github.com/wutiange/log-listener-plugin/issues`,
+    ],
+    tag: Tag.LOG_PLUGIN_INTERNAL_ERROR,
+    level: Level.ERROR,
+    createTime: Date.now(),
+  }
+}

@@ -1,7 +1,7 @@
 import Server from './Server';
 import { createClassWithErrorHandling } from './utils';
 import { httpInterceptor } from './HTTPInterceptor';
-import { getDefaultStorage, Level, Tag, URLS_KEY } from './common';
+import { getDefaultStorage, Level, LOG_KEY, Tag, URLS_KEY } from './common';
 import logger from './logger';
 
 class LogPlugin {
@@ -17,6 +17,7 @@ class LogPlugin {
   private init = async () => {
     if (!this.storage) {
       this.server = new Server();
+      logger.warn(LOG_KEY, '你并没有设置 storage ，这会导致 App 杀死后可能需要重新加入日志系统才能收集日志数据，建议你设置 storage 。')
     } else {
       const urlsStr = await this.storage.getItem(URLS_KEY)
       if (urlsStr) {
@@ -150,9 +151,9 @@ class LogPlugin {
   private _log = (level: string, tag: string, ...data: any[]) => {
     const sendData = {
       message: data,
-      tag,
-      level: level ?? 'log',
-      createTime: Date.now(),
+      Tag: tag,
+      Level: level ?? 'log',
+      CreateTime: Date.now(),
     };
     this.server?.log(sendData);
   }
