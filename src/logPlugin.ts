@@ -151,9 +151,9 @@ class LogPlugin {
   private _log = (level: string, tag: string, ...data: any[]) => {
     const sendData = {
       message: data,
-      Tag: tag,
-      Level: level ?? 'log',
-      CreateTime: Date.now(),
+      tag,
+      level: level ?? 'log',
+      createTime: Date.now(),
     };
     this.server?.log(sendData);
   }
