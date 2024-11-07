@@ -53,11 +53,10 @@ In your `info.plist` add the following strings:
 ```plist
 <key>NSBonjourServices</key>
 	<array>
-		<string>my_service._tcp.</string>
-		<string>my_other_service._tcp.</string>
+		<string>Log Record Server._http._tcp</string>
 	</array>
 <key>NSLocalNetworkUsageDescription</key>
-<string>Describe why you want to use local network discovery here</string>
+<string>Access nearby Log Records to view logs</string>
 ```
 
 接下来只需要在项目中找个合适的位置，一般是在 App.js 中调用。
