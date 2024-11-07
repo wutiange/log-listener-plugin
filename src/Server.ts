@@ -131,9 +131,7 @@ class Server {
       }
       await Promise.all(this.getUrls().map(async (e) => request(e, data)));
     } catch (error: any) {
-      Object.values(this.baseUrlObj).map(async (e) =>
-        request(e, getErrMsg(error)).catch((_) => {})
-      );
+      logger.warn(LOG_KEY, "上报日志失败", error)
     }
   };
 
