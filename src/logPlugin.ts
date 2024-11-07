@@ -115,8 +115,6 @@ class LogPlugin {
   setBaseUrl = (url: string) => {
     const tempUrl = url?.trim()
     if (!tempUrl) {
-      httpInterceptor.disable()
-      this.stopRecordLog()
       return
     }
     if (this.server) {
@@ -124,6 +122,7 @@ class LogPlugin {
     } else {
       this.server = new Server(tempUrl);
     }
+    httpInterceptor.setIgnoredUrls(this.handleIgnoredUrls())
     if (this.isAuto) {
       this.startRecordNetwork();
       this.startRecordLog()
