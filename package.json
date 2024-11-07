@@ -40,7 +40,8 @@
   "peerDependencies": {
     "react-native": "*",
     "react-native-device-info": "^14.0.0",
-    "react-native-zeroconf": "^0.13.8"
+    "react-native-zeroconf": "^0.13.8",
+    "@react-native-async-storage/async-storage": "*"
   },
   "files": [
     "package.json",

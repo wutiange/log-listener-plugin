@@ -1,8 +1,34 @@
 import Server from './Server';
 import { createClassWithErrorHandling } from './utils';
 import { httpInterceptor } from './HTTPInterceptor';
-import { getDefaultStorage, Level, LOG_KEY, Tag, URLS_KEY } from './common';
+import { DEFAULT_TIMEOUT, getDefaultStorage, Level, LOG_KEY, Tag, URLS_KEY } from './common';
 import logger from './logger';
+
+type Options = {
+  /**
+   * storage 用于存储已设置的日志系统的 url
+   * @default @react-native-async-storage/async-storage
+   */
+  storage?: Storage
+  /**
+   * 设置上传日志的超时时间，单位为毫秒
+   * @default 3000
+   */
+  timeout?: number
+  /**
+   * 日志系统的url
+   */
+  testUrl?: string
+  /**
+   * 是否自动开启日志记录
+   * @default false
+   */
+  isAuto?: boolean
+  /**
+   * 设置日志系统的基础数据，这些数据会自动添加到每条日志中
+   */
+  baseData?: Record<string, any>
+}
 
 class LogPlugin {
   private server: Server | null = null;
@@ -15,16 +41,14 @@ class LogPlugin {
   }
 
   private init = async () => {
+    this.server = new Server();
     if (!this.storage) {
-      this.server = new Server();
       logger.warn(LOG_KEY, '你并没有设置 storage ，这会导致 App 杀死后可能需要重新加入日志系统才能收集日志数据，建议你设置 storage 。')
     } else {
       const urlsStr = await this.storage.getItem(URLS_KEY)
       if (urlsStr) {
         const urls = JSON.parse(urlsStr)
-        this.server = new Server(urls);
-      } else {
-        this.server = new Server();
+        this.server.setBaseUrlObj(urls)
       }
     }
 
@@ -37,10 +61,21 @@ class LogPlugin {
     })
   }
 
-  config = ({ storage }: { storage: Storage }) => {
-    this.storage = storage;
+  config = ({ storage, timeout, testUrl, isAuto, baseData = {} }: Options) => {
+    if (isAuto) {
+      this.auto()
+    } else {
+      this.unAuto()
+    }
+    this.storage = storage ?? getDefaultStorage();
+    this.setTimeout(timeout ?? DEFAULT_TIMEOUT)
+    this.setBaseUrl(testUrl)
+    this.setBaseData(baseData)
   };
 
+  /**
+   * @deprecated 这个方法将在下一个主要版本中被移除。请使用 config({isAuto: true}) 替代。
+   */
   auto = () => {
     this.startRecordNetwork();
     this.startRecordLog();
@@ -112,11 +147,11 @@ class LogPlugin {
     httpInterceptor.enable({ignoredUrls: this.handleIgnoredUrls()})
   }
 
+  /**
+   * @deprecated 这个方法将在下一个主要版本中被移除。请使用 config({testUrl: ''}) 替代。
+   */
   setBaseUrl = (url: string) => {
     const tempUrl = url?.trim()
-    if (!tempUrl) {
-      return
-    }
     if (this.server) {
       this.server.updateUrl(tempUrl);
     } else {
@@ -129,6 +164,9 @@ class LogPlugin {
     }
   }
 
+  /**
+   * @deprecated 这个方法将在下一个主要版本中被移除。请使用 config({timeout: 3000}) 替代。
+   */
   setTimeout = (timeout: number) => {
     if (typeof timeout === 'number') {
       this.timeout = timeout;
@@ -136,6 +174,9 @@ class LogPlugin {
     }
   }
 
+  /**
+   * @deprecated 这个方法将在下一个主要版本中被移除。移除后将不再支持获取超时时间。
+   */
   getTimeout = () => {
     if (typeof this.timeout === 'number') {
       return this.timeout;
@@ -143,6 +184,9 @@ class LogPlugin {
     return null;
   }
 
+  /**
+   * @deprecated 这个方法将在下一个主要版本中被移除。请使用 config({baseData: {}}) 替代。
+   */
   setBaseData = (data: Record<string, any> = {}) => {
     this.server.updateBaseData(data)
   }

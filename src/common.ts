@@ -1,5 +1,8 @@
 import logger from "./logger";
 
+export const URLS_KEY = 'log-listener-plugin-urls$$key'
+export const DEFAULT_TIMEOUT = 3000
+export const LOG_KEY = '[@wutiange/log-listener-plugin 日志]'
 export enum Level {
   LOG = 'log',
   WARN = 'warn',
@@ -52,9 +55,6 @@ export const getDefaultStorage = (): Storage => {
   }
 }
 
-export const URLS_KEY = 'log-listener-plugin-urls$$key'
-
-export const LOG_KEY = '[@wutiange/log-listener-plugin 日志]'
 
 export const getErrMsg = (error: any) => {
   return {

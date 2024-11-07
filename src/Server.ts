@@ -139,7 +139,11 @@ class Server {
 
   updateUrl(url: string) {
     const tempUrl = url.includes("http") ? url : `http://${url}`;
-    this.baseUrlObj["Default"] = tempUrl;
+    if (!url) {
+      delete this.baseUrlObj["Default"];
+    } else {
+      this.baseUrlObj["Default"] = tempUrl;
+    }
   }
 
   setBaseUrlObj(urlObj: Record<string, string>) {
