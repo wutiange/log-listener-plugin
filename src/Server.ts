@@ -41,7 +41,7 @@ class Server {
       },
       body: JSON.stringify({
         token,
-        model: this.innerBaseData.model,
+        model: this.innerBaseData.Model,
         id: md5(JSON.stringify(this.innerBaseData)).toString(),
       }),
     });

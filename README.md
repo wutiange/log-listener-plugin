@@ -53,7 +53,7 @@ In your `info.plist` add the following strings:
 ```plist
 <key>NSBonjourServices</key>
 	<array>
-		<string>Log Record Server._http._tcp</string>
+		<string>_http._tcp</string>
 	</array>
 <key>NSLocalNetworkUsageDescription</key>
 <string>Access nearby Log Records to view logs</string>
