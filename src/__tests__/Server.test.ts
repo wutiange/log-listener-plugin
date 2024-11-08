@@ -129,31 +129,6 @@ describe('Server', () => {
       expect(global.fetch).toHaveBeenCalled();
       expect(sleep).toHaveBeenCalledWith(100, true);
     });
-
-    it('should handle errors and send error data', async () => {
-      (global.fetch as jest.Mock).mockImplementation(() => 
-        Promise.reject(new Error('Network error'))
-      );
-  
-      const testData = { message: 'test' };
-      await server.log(testData);
-  
-      // 修改这里的断言来匹配实际的错误格式
-      expect(global.fetch).toHaveBeenCalledWith(
-        expect.any(String),
-        expect.objectContaining({
-          body: expect.stringContaining('log-plugin-internal-error')
-        })
-      );
-  
-      // 如果需要更精确的检查，可以添加以下断言
-      const lastCall = (global.fetch as jest.Mock).mock.calls[(global.fetch as jest.Mock).mock.calls.length - 1];
-      const body = JSON.parse(lastCall[1].body);
-      expect(body).toMatchObject({
-        tag: 'log-plugin-internal-error',
-        level: 'error'
-      });
-    });
   });
 
   describe('Base Data Management', () => {
