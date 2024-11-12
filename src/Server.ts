@@ -82,6 +82,9 @@ class Server {
           logger.warn(LOG_KEY, "加入日志系统失败---", error);
         }
       });
+      zeroconf.on("error", (err) => {
+        logger.warn(LOG_KEY, "zeroconf出现错误", err);
+      })
       zeroconf.scan("http", "tcp");
     } catch (error: any) {
       logger.warn(LOG_KEY, "zeroconf扫描或处理相关逻辑失败或者您根本就没有安装 react-native-zeroconf ，如果您没有安装，那么您将无法使用发现功能", error);
