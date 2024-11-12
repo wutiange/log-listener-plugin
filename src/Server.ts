@@ -41,7 +41,7 @@ class Server {
       },
       body: JSON.stringify({
         token,
-        model: this.innerBaseData.Model,
+        model: this.innerBaseData.Model ?? `${this.innerBaseData.systemName}v${this.innerBaseData.osVersion}`,
         id: md5(JSON.stringify(this.innerBaseData)).toString(),
       }),
     });
