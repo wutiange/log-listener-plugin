@@ -131,6 +131,9 @@ class Server {
       }
       await Promise.all(this.getUrls().map(async (e) => request(e, data)));
     } catch (error: any) {
+      if (error?.message?.includes("Network request failed")) {
+        return
+      }
       logger.warn(LOG_KEY, "上报日志失败", error)
     }
   };
