@@ -82,6 +82,12 @@ class Server {
           logger.warn(LOG_KEY, "加入日志系统失败---", error);
         }
       });
+      zeroconf.on("remove", (name) => {
+        delete this.baseUrlObj[name]
+        if (this.urlsListener) {
+          this.urlsListener(this.getUrls(), this.baseUrlObj);
+        }
+      });
       zeroconf.on("error", (err) => {
         logger.warn(LOG_KEY, "zeroconf出现错误", err);
       })
@@ -134,7 +140,7 @@ class Server {
       }
       await Promise.all(this.getUrls().map(async (e) => request(e, data)));
     } catch (error: any) {
-      if (error?.message?.includes("Network request failed")) {
+      if (error?.message?.includes("Network request failed") || error?.message?.includes("Timeout")) {
         return
       }
       logger.warn(LOG_KEY, "上报日志失败", error)
