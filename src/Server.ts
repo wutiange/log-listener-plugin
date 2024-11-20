@@ -146,7 +146,7 @@ class Server {
       const currentUrl = this.urlsObj.get("Default");
       this.baseUrlArr.delete(currentUrl);
       this.urlsObj.delete("Default");
-    } else if (!hasPort(url)) {
+    } else if (!hasPort(tempUrl)) {
       this.updateUrl(`${tempUrl}:${DEFAULT_PORT}`);
     } else {
       this.baseUrlArr.add(tempUrl);

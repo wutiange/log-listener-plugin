@@ -29,21 +29,21 @@ describe('Server', () => {
   describe('Constructor and URL Management', () => {
     it('should initialize with default values', () => {
       server = new Server();
-      expect(server.getUrls()).toEqual([]);
+      expect(server.getBaseUrlArr()).toEqual(new Set([]));
     });
 
     it('should initialize with custom URL', () => {
       server = new Server('localhost:8080');
-      expect(server.getUrls()).toEqual(['http://localhost:8080']);
+      expect(server.getBaseUrlArr()).toEqual(new Set(['http://localhost:8080']));
     });
 
     it('should handle URLs with and without http prefix', () => {
       server = new Server();
       server.updateUrl('localhost:8080');
-      expect(server.getUrls()).toEqual(['http://localhost:8080']);
+      expect(server.getBaseUrlArr()).toEqual(new Set(['http://localhost:8080']));
       
       server.updateUrl('http://localhost:8080');
-      expect(server.getUrls()).toEqual(['http://localhost:8080']);
+      expect(server.getBaseUrlArr()).toEqual(new Set(['http://localhost:8080']));
     });
   });
 

@@ -1,3 +1,4 @@
+import logger from '../logger';
 import { createClassWithErrorHandling, hasPort } from '../utils';
 
 describe('createClassWithErrorHandling', () => {
@@ -22,7 +23,7 @@ describe('createClassWithErrorHandling', () => {
   let consoleErrorSpy: jest.SpyInstance;
 
   beforeEach(() => {
-    consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+    consoleErrorSpy = jest.spyOn(logger, 'error').mockImplementation(() => {});
   });
 
   afterEach(() => {
