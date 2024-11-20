@@ -48,13 +48,13 @@ export function createClassWithErrorHandling<T extends Constructor>(BaseClass: T
                 const result = value.apply(this, args);
                 if (result instanceof Promise) {
                   return result.catch((error: Error) => {
-                    console.error(`Error in ${String(prop)}:`, error);
+                    logger.error(`Error in ${String(prop)}:`, error);
                     throw error; // 重新抛出错误，以便调用者可以捕获它
                   });
                 }
                 return result;
               } catch (error) {
-                console.error(`Error in ${String(prop)}:`, error);
+                logger.error(`Error in ${String(prop)}:`, error);
                 throw error; // 重新抛出错误，以便调用者可以捕获它
               }
             };
@@ -68,13 +68,13 @@ export function createClassWithErrorHandling<T extends Constructor>(BaseClass: T
                 const result = value.apply(this, args);
                 if (result instanceof Promise) {
                   return result.catch((error: Error) => {
-                    console.error(`Error in ${String(prop)}:`, error);
+                    logger.error(`Error in ${String(prop)}:`, error);
                     throw error;
                   });
                 }
                 return result;
               } catch (error) {
-                console.error(`Error in ${String(prop)}:`, error);
+                logger.error(`Error in ${String(prop)}:`, error);
                 throw error;
               }
             };

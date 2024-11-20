@@ -48,14 +48,14 @@ class LogPlugin {
       const urlsStr = await this.storage.getItem(URLS_KEY)
       if (urlsStr) {
         const urls = JSON.parse(urlsStr)
-        this.server.setBaseUrlObj(urls)
+        this.server.setBaseUrlArr(new Set(urls))
       }
     }
 
     
-    this.server.addUrlsListener((_, urlsObj) => {
+    this.server.addUrlsListener((urlArr) => {
       if (this.storage) {
-        this.storage.setItem(URLS_KEY, JSON.stringify(urlsObj))
+        this.storage.setItem(URLS_KEY, JSON.stringify(urlArr))
       }
       httpInterceptor.setIgnoredUrls(this.handleIgnoredUrls())
     })
@@ -113,13 +113,12 @@ class LogPlugin {
   }
 
   private handleIgnoredUrls = () => {
-    const urls = this.server?.getUrls?.()
-    let ignoredUrls: string[] = []
-    if (urls?.length) {
-      ignoredUrls = urls.reduce((acc, url) => {
-        acc.push(`${url}/log`, `${url}/network`, `${url}/join`)
-        return acc
-      }, [] as string[])
+    const urls = this.server?.getBaseUrlArr?.()
+    const ignoredUrls: string[] = []
+    if (urls?.size) {
+      urls.forEach((url) => {
+        ignoredUrls.push(`${url}/log`, `${url}/network`, `${url}/join`)
+      })
     }
     return ignoredUrls
   }

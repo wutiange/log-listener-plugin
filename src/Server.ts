@@ -7,20 +7,18 @@ import md5 from 'crypto-js/md5';
 
 const DEFAULT_PORT = 27751;
 class Server {
-  private baseUrlObj: Record<string, string> = {};
+  private baseUrlArr: Set<string> = new Set();
+  private urlsObj: Map<string, string> = new Map();
   private timeout: number;
   private baseData: Record<string, any> = {};
-  private urlsListener: (
-    urls: string[],
-    urlsObj: Record<string, string>
-  ) => void;
+  private urlsListener: (urls: Set<string>) => void;
   private innerBaseData: Record<string, string> = {};
 
-  constructor(url?: string | Record<string, string>, timeout: number = 30000) {
+  constructor(url?: string | Set<string>, timeout: number = 30000) {
     if (typeof url === "string") {
       this.updateUrl(url);
     } else {
-      this.setBaseUrlObj(url ?? {});
+      this.setBaseUrlArr(url ?? new Set());
     }
     this.timeout = timeout;
     this.innerBaseData = getBaseData();
@@ -28,7 +26,7 @@ class Server {
   }
 
   addUrlsListener = (
-    onNewUrlCallback: (urls: string[], urlsObj: Record<string, string>) => void
+    onNewUrlCallback: (urls: Set<string>) => void
   ) => {
     this.urlsListener = onNewUrlCallback;
   };
@@ -49,7 +47,6 @@ class Server {
       return false;
     }
     const json = await response.json();
-
     if (json.code !== 0) {
       return false;
     }
@@ -67,25 +64,28 @@ class Server {
       zeroconf.on("resolved", async (service) => {
         try {
           const { path, token } = service.txt ?? {};
-          if (!(path && token) || this.baseUrlObj[token]) {
+          const url = `http://${service.host}:${service.port}`;
+          if (!(path && token) || this.baseUrlArr.has(url)) {
             return;
           }
-          const url = `http://${service.host}:${service.port}`;
           if (!(await this.requestJoin(`${url}${path}`, token))) {
             return;
           }
-          this.baseUrlObj[token] = url;
+          this.baseUrlArr.add(url);
+          this.urlsObj.set(service.name, url)
           if (this.urlsListener) {
-            this.urlsListener(this.getUrls(), this.baseUrlObj);
+            this.urlsListener(this.baseUrlArr);
           }
         } catch (error) {
           logger.warn(LOG_KEY, "加入日志系统失败---", error);
         }
       });
       zeroconf.on("remove", (name) => {
-        delete this.baseUrlObj[name]
+        const currentUrl = this.urlsObj.get(name);
+        this.baseUrlArr.delete(currentUrl)
+        this.urlsObj.delete(name)
         if (this.urlsListener) {
-          this.urlsListener(this.getUrls(), this.baseUrlObj);
+          this.urlsListener(this.baseUrlArr);
         }
       });
       zeroconf.on("error", (err) => {
@@ -99,15 +99,6 @@ class Server {
 
   updateTimeout(timeout = 3000) {
     this.timeout = timeout;
-  }
-
-  getUrls() {
-    return Object.values(this.baseUrlObj).map((e) => {
-      if (hasPort(e)) {
-        return e;
-      }
-      return `${e}:${DEFAULT_PORT}`;
-    });
   }
 
   private send = async (
@@ -134,33 +125,44 @@ class Server {
         sleep(this.timeout, true),
       ]);
     };
-    try {
-      if (Object.keys(this.baseUrlObj).length === 0) {
-        return;
-      }
-      await Promise.all(this.getUrls().map(async (e) => request(e, data)));
-    } catch (error: any) {
-      if (error?.message?.includes("Network request failed") || error?.message?.includes("Timeout")) {
-        return
-      }
-      logger.warn(LOG_KEY, "上报日志失败", error)
+    if (this.baseUrlArr.size === 0) {
+      return;
     }
+    this.baseUrlArr.forEach(async (e) => {
+      try {
+        await request(e, data)
+      } catch (error: any) {
+        if (error?.message?.includes("Network request failed") || error?.message?.includes("Timeout")) {
+          return
+        }
+        logger.warn(LOG_KEY, "上报日志失败", error)
+      }
+    })
   };
 
-  updateUrl(url: string) {
+  updateUrl(url: string = '') {
     const tempUrl = url.includes("http") ? url : `http://${url}`;
     if (!url) {
-      delete this.baseUrlObj["Default"];
+      const currentUrl = this.urlsObj.get("Default");
+      this.baseUrlArr.delete(currentUrl);
+      this.urlsObj.delete("Default");
+    } else if (!hasPort(url)) {
+      this.updateUrl(`${tempUrl}:${DEFAULT_PORT}`);
     } else {
-      this.baseUrlObj["Default"] = tempUrl;
+      this.baseUrlArr.add(tempUrl);
+      this.urlsObj.set("Default", tempUrl);
     }
   }
 
-  setBaseUrlObj(urlObj: Record<string, string>) {
-    this.baseUrlObj = urlObj;
+  setBaseUrlArr(urlArr: Set<string> = new Set()) {
+    this.baseUrlArr = urlArr;
   }
 
-  updateBaseData(data: Record<string, any>) {
+  getBaseUrlArr() {
+    return this.baseUrlArr;
+  }
+
+  updateBaseData(data: Record<string, any> = {}) {
     this.baseData = data;
   }
 
