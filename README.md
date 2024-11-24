@@ -160,4 +160,4 @@ type Options = {
 1.  在配置 baseUrl 的时候，必须填写的是 [log-record](https://github.com/wutiange/log-record) 的地址，也就是你在什么电脑打开的 log-record 客户端，那么这里添加的就是对应电脑的 ip 地址。集成这个插件的 app 端要保证跟 log-record 客户端在同一个局域网下。
 1.  如果你不知道日志系统的 IP ，可以在日志系统的 `设置 > 链接说明（需要版本大于1.0.9）` 中找到，如下图所示：
 
-![0cf34d6cd25ee1f725b57dd2d076c336.png](docs/images/0cf34d6cd25ee1f725b57dd2d076c336.png)
+![0cf34d6cd25ee1f725b57dd2d076c336.png](https://github.com/wutiange/log-listener-plugin/raw/dev/docs/images/0cf34d6cd25ee1f725b57dd2d076c336.png)
