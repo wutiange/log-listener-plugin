@@ -1,9 +1,15 @@
 import React from 'react';
 import {Button, SafeAreaView, StyleSheet} from 'react-native';
+import CustomError from './CustomError';
 
 const App = () => {
   const onPressLog = () => {
     console.log('开始测试简单日志');
+    try {
+      throw new CustomError('dsadsa');
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const onPressWarn = () => {

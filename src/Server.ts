@@ -1,6 +1,6 @@
 import { hasPort, sleep } from "./utils";
 import Zeroconf from "react-native-zeroconf";
-import { getBaseData, getErrMsg, LOG_KEY } from "./common";
+import { getBaseData, LOG_KEY } from "./common";
 import logger from "./logger";
 import md5 from 'crypto-js/md5';
 

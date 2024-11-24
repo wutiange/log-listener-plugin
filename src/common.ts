@@ -55,16 +55,3 @@ export const getDefaultStorage = (): Storage => {
   }
 }
 
-
-export const getErrMsg = (error: any) => {
-  return {
-    message: [
-      `${
-        error?.message ?? error
-      }--->这是@wutiange/log-listener-plugin内部错误，请提issue反馈，issue地址：https://github.com/wutiange/log-listener-plugin/issues`,
-    ],
-    tag: Tag.LOG_PLUGIN_INTERNAL_ERROR,
-    level: Level.ERROR,
-    createTime: Date.now(),
-  }
-}

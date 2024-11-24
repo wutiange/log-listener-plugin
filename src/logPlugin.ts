@@ -42,9 +42,8 @@ class LogPlugin {
 
   private init = async () => {
     this.server = new Server();
-    if (!this.storage) {
-      logger.warn(LOG_KEY, '你并没有设置 storage ，这会导致 App 杀死后可能需要重新加入日志系统才能收集日志数据，建议你设置 storage 。')
-    } else {
+
+    if (this.storage) {
       const urlsStr = await this.storage.getItem(URLS_KEY)
       if (urlsStr) {
         const urls = JSON.parse(urlsStr)
@@ -91,18 +90,27 @@ class LogPlugin {
 
   startRecordLog = () => {
     console.log = (...data: any[]) => {
-      logger.log(...data)
       this.log(...data);
+      if (!__DEV__) {
+        return
+      }
+      logger.log(...data)
     };
 
     console.warn = (...data: any[]) => {
-      logger.warn(...data)
       this.warn(...data);
+      if (!__DEV__) {
+        return
+      }
+      logger.warn(...data)
     };
 
     console.error = (...data: any[]) => {
-      logger.error(...data)
       this.error(...data);
+      if (!__DEV__) {
+        return
+      }
+      logger.error(...data)
     };
   }
 

@@ -2,6 +2,7 @@ import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
 import BlobFileReader from 'react-native/Libraries/Blob/FileReader';
 import {Blob} from 'buffer';
 import { createClassWithErrorHandling, formDataToString } from './utils';
+import logger from './logger';
 
 type StartNetworkLoggingOptions = {
   /** List of hosts to ignore, e.g. `services.test.com` */
@@ -86,7 +87,7 @@ const getResponseBody = async (responseType: string, response: any) => {
     }
     return response ?? null;
   } catch (error) {
-    console.warn("getResponseBody---error---", error)
+    logger.warn("getResponseBody---error---", error)
     return null;
   }
 };

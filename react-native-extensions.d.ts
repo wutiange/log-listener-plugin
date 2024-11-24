@@ -14,6 +14,8 @@ declare module 'react-native/Libraries/Network/XHRInterceptor' {
   export default XHRInterceptor;
 }
 
+// global.d.ts
+declare const __DEV__: boolean;
 
 declare module 'react-native/Libraries/Blob/FileReader' {
   export default class BlobFileReader {
