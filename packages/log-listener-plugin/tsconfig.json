@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "baseUrl": "."
+  },
+  "include": [
+    "src",
+    "index.ts",
+    "react-native-extensions.d.ts"
+  ]
+}
