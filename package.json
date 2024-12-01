@@ -3,11 +3,16 @@
   "scripts": {
     "log:build": "yarn workspace @wutiange/log-listener-plugin build",
     "log:dev": "yarn workspace @wutiange/log-listener-plugin dev",
-    "log:clean": "yarn workspace @wutiange/log-listener-plugin clean"
+    "log:clean": "yarn workspace @wutiange/log-listener-plugin clean",
+    "example:android": "yarn workspace example android",
+    "example:ios": "yarn workspace example ios",
+    "example:start": "yarn workspace example start"
   },
-  "workspaces": [
-    "packages/*"
-  ],
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
   "private": true,
   "packageManager": "yarn@4.5.3",
   "devDependencies": {
