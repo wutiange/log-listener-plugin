@@ -2455,52 +2455,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rnx-kit/metro-config@npm:^2.0.1":
-  version: 2.0.1
-  resolution: "@rnx-kit/metro-config@npm:2.0.1"
-  dependencies:
-    "@rnx-kit/tools-node": "npm:^3.0.0"
-    "@rnx-kit/tools-react-native": "npm:^2.0.0"
-    "@rnx-kit/tools-workspaces": "npm:^0.2.0"
-  peerDependencies:
-    "@react-native/metro-config": "*"
-    react: "*"
-    react-native: "*"
-  peerDependenciesMeta:
-    "@react-native/metro-config":
-      optional: true
-  checksum: 10c0/fb90bdcec980595898a7c675dd83c81a91f08bdfea06ed1e9f8583fa69b719b089527bc0595406d65e3c70fd46c5acfbafd373183cd91e0c68cb7c81427b8d11
-  languageName: node
-  linkType: hard
-
-"@rnx-kit/tools-node@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "@rnx-kit/tools-node@npm:3.0.0"
-  checksum: 10c0/b223ce5a9a897fe0e17502bc0285299b2cf5fa9358e2870eff92079d93e4b09dc18988cb3204c0596910d23553c37ac016b39a3772852736125cbdbae626a876
-  languageName: node
-  linkType: hard
-
-"@rnx-kit/tools-react-native@npm:^2.0.0":
-  version: 2.0.2
-  resolution: "@rnx-kit/tools-react-native@npm:2.0.2"
-  dependencies:
-    "@rnx-kit/tools-node": "npm:^3.0.0"
-  checksum: 10c0/3743bbb9ca0c7da29d515a5f954d54d705dcc463712f2f0850645bab86bf1853f301036476fd6f761c401b2fdce8d3e10e60a5c3357317779b5ffd3355152564
-  languageName: node
-  linkType: hard
-
-"@rnx-kit/tools-workspaces@npm:^0.2.0":
-  version: 0.2.0
-  resolution: "@rnx-kit/tools-workspaces@npm:0.2.0"
-  dependencies:
-    fast-glob: "npm:^3.2.7"
-    find-up: "npm:^5.0.0"
-    read-yaml-file: "npm:^2.1.0"
-    strip-json-comments: "npm:^3.1.1"
-  checksum: 10c0/ad6ec7a6898327e19a1258dbae0f6f3cca8345e50cf7c89bda7153aa9a2cd6202c11b43c944d9c4ef7913e12cc1ff3a6b76f0564a5cfae75099793286b1db516
-  languageName: node
-  linkType: hard
-
 "@rollup/plugin-commonjs@npm:^28.0.1":
   version: 28.0.1
   resolution: "@rollup/plugin-commonjs@npm:28.0.1"
@@ -3141,7 +3095,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@wutiange/log-listener-plugin@workspace:packages/log-listener-plugin":
+"@wutiange/log-listener-plugin@workspace:^, @wutiange/log-listener-plugin@workspace:packages/log-listener-plugin":
   version: 0.0.0-use.local
   resolution: "@wutiange/log-listener-plugin@workspace:packages/log-listener-plugin"
   dependencies:
@@ -5014,9 +4968,9 @@ __metadata:
     "@react-native/eslint-config": "npm:0.76.3"
     "@react-native/metro-config": "npm:0.76.3"
     "@react-native/typescript-config": "npm:0.76.3"
-    "@rnx-kit/metro-config": "npm:^2.0.1"
     "@types/react": "npm:^18.2.6"
     "@types/react-test-renderer": "npm:^18.0.0"
+    "@wutiange/log-listener-plugin": "workspace:^"
     axios: "npm:^1.7.8"
     babel-jest: "npm:^29.6.3"
     eslint: "npm:^8.19.0"
@@ -5082,7 +5036,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fast-glob@npm:^3.2.7, fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.2":
+"fast-glob@npm:^3.2.9, fast-glob@npm:^3.3.2":
   version: 3.3.2
   resolution: "fast-glob@npm:3.3.2"
   dependencies:
@@ -6823,7 +6777,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"js-yaml@npm:^4.0.0, js-yaml@npm:^4.1.0":
+"js-yaml@npm:^4.1.0":
   version: 4.1.0
   resolution: "js-yaml@npm:4.1.0"
   dependencies:
@@ -8515,16 +8469,6 @@ __metadata:
   dependencies:
     loose-envify: "npm:^1.1.0"
   checksum: 10c0/283e8c5efcf37802c9d1ce767f302dd569dd97a70d9bb8c7be79a789b9902451e0d16334b05d73299b20f048cbc3c7d288bbbde10b701fa194e2089c237dbea3
-  languageName: node
-  linkType: hard
-
-"read-yaml-file@npm:^2.1.0":
-  version: 2.1.0
-  resolution: "read-yaml-file@npm:2.1.0"
-  dependencies:
-    js-yaml: "npm:^4.0.0"
-    strip-bom: "npm:^4.0.0"
-  checksum: 10c0/bad0673abe78a5bde7c53b22ee7cdd0dfe49ab7338a4ad8618be9fcd2fd25ab9ae60d395907fddbfb2e7fbbf494867aeec78295c2396bec2669fd7087d2734c1
   languageName: node
   linkType: hard
 
