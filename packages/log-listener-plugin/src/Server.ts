@@ -51,9 +51,7 @@ class Server {
 
   private async handleZeroConf() {
     try {
-      
-      
-      const ZeroConf: any = (await import("react-native-zeroconf")).default
+      const ZeroConf: any = require("react-native-zeroconf")?.default
       if (!ZeroConf) {
         return;
       }
