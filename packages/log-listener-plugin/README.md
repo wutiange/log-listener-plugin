@@ -23,6 +23,7 @@ Install using yarn
 ```bash
 yarn add @wutiange/log-listener-plugin
 ```
+**Since the logging system uses HTTP, the project needs to be configured to support HTTP for proper operation.**
 
 ## 2. Usage
 

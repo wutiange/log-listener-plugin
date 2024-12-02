@@ -22,6 +22,8 @@ npm install @wutiange/log-listener-plugin
 yarn add @wutiange/log-listener-plugin
 ```
 
+**由于日志系统使用 http ，所以需要配置项目支持 http 才能正常使用。**
+
 ## 2. 使用
 
 在你需要开始记录日志的地方，调用下面的代码即可。

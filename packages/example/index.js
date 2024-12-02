@@ -9,5 +9,7 @@ import logger from '@wutiange/log-listener-plugin';
 
 // 把 testUrl 更换成你自己的 IP 地址
 logger.config({isAuto: true, testUrl: '192.168.3.52'});
+// 通过发现服务的方式
+// logger.config({isAuto: true});
 
 AppRegistry.registerComponent(appName, () => App);
