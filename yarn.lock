@@ -1966,6 +1966,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@log-listener-plugin/monorepo@workspace:."
   dependencies:
+    "@jest/globals": "npm:^29.7.0"
+    "@types/jest": "npm:^29.5.14"
     jest: "npm:^29.7.0"
     rimraf: "npm:^6.0.1"
     ts-jest: "npm:^29.2.5"
@@ -3097,21 +3099,23 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@wutiange/concurrent-queue@workspace:packages/concurrent-queue":
+  version: 0.0.0-use.local
+  resolution: "@wutiange/concurrent-queue@workspace:packages/concurrent-queue"
+  languageName: unknown
+  linkType: soft
+
 "@wutiange/log-listener-plugin@workspace:^, @wutiange/log-listener-plugin@workspace:packages/log-listener-plugin":
   version: 0.0.0-use.local
   resolution: "@wutiange/log-listener-plugin@workspace:packages/log-listener-plugin"
   dependencies:
-    "@jest/globals": "npm:^29.7.0"
     "@rollup/plugin-commonjs": "npm:^28.0.1"
     "@rollup/plugin-node-resolve": "npm:^15.3.0"
     "@rollup/plugin-typescript": "npm:^12.1.1"
-    "@types/jest": "npm:^29.5.14"
     "@types/react-native-zeroconf": "npm:^0.13.1"
     "@types/url-parse": "npm:^1.4.11"
-    jest: "npm:^29.7.0"
     rollup: "npm:^4.28.0"
     rollup-plugin-dts: "npm:^6.1.1"
-    ts-jest: "npm:^29.1.2"
     tslib: "npm:^2.8.1"
     typescript: "npm:^5.7.2"
     url-parse: "npm:^1.5.10"
@@ -4082,12 +4086,6 @@ __metadata:
   checksum: 10c0/c996b1cfdf95b6c90fee4dae37e332c8b6eb7d106430c17d538034c0ad9a1630cb194d2ab37293b1bdd4d779494beee7786d586a50bd9376fd6f7bcc2bd4c98f
   languageName: node
   linkType: hard
-
-"concurrent-queue@workspace:packages/concurrent-queue":
-  version: 0.0.0-use.local
-  resolution: "concurrent-queue@workspace:packages/concurrent-queue"
-  languageName: unknown
-  linkType: soft
 
 "connect@npm:^3.6.5":
   version: 3.7.0
@@ -9584,7 +9582,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^29.1.2, ts-jest@npm:^29.2.5":
+"ts-jest@npm:^29.2.5":
   version: 29.2.5
   resolution: "ts-jest@npm:29.2.5"
   dependencies:
