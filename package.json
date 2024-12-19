@@ -1,16 +1,11 @@
 {
   "name": "@log-listener-plugin/monorepo",
   "scripts": {
-    "log:build": "yarn workspace @wutiange/log-listener-plugin build",
-    "queue:build": "yarn workspace @wutiange/concurrent-queue build",
-    "log:dev": "yarn workspace @wutiange/log-listener-plugin dev",
-    "log:clean": "yarn workspace @wutiange/log-listener-plugin clean",
-    "example:android": "yarn workspace example android",
-    "example:ios": "yarn workspace example ios",
-    "example:start": "yarn workspace example start",
-    "build": "yarn workspaces foreach -pv run build",
-    "dev": "yarn workspaces foreach -pv run dev",
-    "test": "yarn workspaces foreach -pv run test"
+    "android": "yarn workspace example android",
+    "ios": "yarn workspace example ios",
+    "start": "yarn workspace example start",
+    "test": "yarn workspaces foreach -Aptv --exclude example run test",
+    "build": "yarn workspaces foreach -Aptv --exclude example run build"
   },
   "workspaces": {
     "packages": [
