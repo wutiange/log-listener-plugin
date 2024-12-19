@@ -5,12 +5,42 @@ import axios from 'axios';
 
 const App = () => {
   const onPressLog = () => {
-    console.log('开始测试简单日志');
-    try {
-      throw new CustomError('dsadsa');
-    } catch (error) {
-      console.log(error);
-    }
+    console.log(
+      '数字', 1,
+      '字符串', '字符串',
+      '对象', {
+        a: 1,
+        b: 2,
+        c: 3,
+      },
+      '数组', [1, 2, 3],
+      '函数', () => {
+        console.log('函数');
+      },
+      '错误', new Error('错误'),
+      'Symbol', Symbol('Symbol'),
+      'undefined', undefined,
+      'null', null,
+      'NaN', NaN,
+      'Infinity', Infinity,
+      'BigInt', BigInt(1),
+      'Date', new Date(),
+      'RegExp', /\w+/,
+      'Promise', new Promise((resolve, reject) => {
+        resolve(1);
+      }),
+      'Map', new Map([
+        ['a', 1],
+        ['b', 2],
+        ['c', 3],
+      ]),
+      'Set', new Set([new Set([0, 6, 12]), 2, 3]),
+      'WeakMap', new WeakMap([
+        [{}, 1],
+        [{}, 2],
+        [{}, 3],
+      ]),
+    );
   };
 
   const onPressWarn = () => {

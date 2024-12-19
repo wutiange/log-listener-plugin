@@ -1,4 +1,4 @@
-import { hasPort, sleep } from "./utils";
+import { hasPort, sleep, typeReplacer } from "./utils";
 import { getBaseData, LOG_KEY } from "./common";
 import logger from "./logger";
 
@@ -112,12 +112,7 @@ class Server {
           },
           body: JSON.stringify(
             { ...this.innerBaseData, ...this.baseData, ..._data },
-            (_, val) => {
-              if (val instanceof Error) {
-                return val.toString();
-              }
-              return val;
-            }
+            typeReplacer
           ),
         }),
         sleep(this.timeout, true),

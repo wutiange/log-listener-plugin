@@ -1,14 +1,20 @@
-import URL from "url-parse";
-import logger from "./logger";
+import URL from 'url-parse';
+import logger from './logger';
 
 export function sleep(ms: number, isReject: boolean = false) {
   return new Promise((resolve, reject) => {
-    setTimeout(isReject ? () => reject({
-      code: 11001,
-      key: '@wutiange/log-listener-plugin%%timeout',
-      message: 'Timeout'
-    }) : resolve, ms)
-  })
+    setTimeout(
+      isReject
+        ? () =>
+            reject({
+              code: 11001,
+              key: '@wutiange/log-listener-plugin%%timeout',
+              message: 'Timeout',
+            })
+        : resolve,
+      ms,
+    );
+  });
 }
 
 // 检查 url 是否有端口号，不包含内置的端口号，比如 80 ，443 等
@@ -26,16 +32,17 @@ export function hasPort(url: string) {
     // 注意：如果使用默认端口（如 HTTP 的 80 或 HTTPS 的 443），port 会是空字符串
     return parsedUrl.port !== '';
   } catch (error) {
-    logger.error(error)
+    logger.error(error);
     // 如果 URL 无效，捕获错误并返回 false
     return false;
   }
 }
 
-
 type Constructor<T = {}> = new (...args: any[]) => T;
 
-export function createClassWithErrorHandling<T extends Constructor>(BaseClass: T): T {
+export function createClassWithErrorHandling<T extends Constructor>(
+  BaseClass: T,
+): T {
   return new Proxy(BaseClass, {
     construct(target: T, args: any[]): object {
       const instance = new target(...args);
@@ -43,7 +50,7 @@ export function createClassWithErrorHandling<T extends Constructor>(BaseClass: T
         get(target: any, prop: string | symbol): any {
           const value = target[prop];
           if (typeof value === 'function') {
-            return function(this: any, ...args: any[]): any {
+            return function (this: any, ...args: any[]): any {
               try {
                 const result = value.apply(this, args);
                 if (result instanceof Promise) {
@@ -63,7 +70,7 @@ export function createClassWithErrorHandling<T extends Constructor>(BaseClass: T
         },
         set(target: any, prop: string | symbol, value: any): boolean {
           if (typeof value === 'function') {
-            target[prop] = function(this: any, ...args: any[]): any {
+            target[prop] = function (this: any, ...args: any[]): any {
               try {
                 const result = value.apply(this, args);
                 if (result instanceof Promise) {
@@ -82,12 +89,11 @@ export function createClassWithErrorHandling<T extends Constructor>(BaseClass: T
             target[prop] = value;
           }
           return true;
-        }
+        },
       });
-    }
+    },
   });
 }
-
 
 export function formDataToString(formData: FormData): string {
   const boundary =
@@ -109,4 +115,21 @@ export function formDataToString(formData: FormData): string {
   return result;
 }
 
-
+export function typeReplacer(key: string, val: any) {
+  if (val instanceof Error) {
+    return val.toString();
+  } else if (val instanceof Function) {
+    return Function.prototype.toString.call(val);
+  } else if (val instanceof Symbol) {
+    return val.toString();
+  } else if (typeof val === 'bigint') {
+    return val.toString();
+  } else if (val instanceof RegExp) {
+    return val.toString();
+  } else if (val instanceof Set) {
+    return Array.from(val);
+  } else if (val instanceof Map) {
+    return Object.fromEntries(val);
+  }
+  return val;
+}
