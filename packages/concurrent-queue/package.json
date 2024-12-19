@@ -2,7 +2,8 @@
   "name": "@wutiange/concurrent-queue",
   "version": "0.0.1",
   "source": "index.ts",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs.js",
+  "module": "dist/index.esm.js",
   "types": "dist/index.d.ts",
   "packageManager": "yarn@4.5.3",
   "scripts": {

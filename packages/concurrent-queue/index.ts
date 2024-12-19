@@ -1,5 +1,5 @@
-type AsyncFunction<T, Args extends any[]> = (...args: Args) => Promise<T>;
-type Options = {
+export type AsyncFunction<T, Args extends any[]> = (...args: Args) => Promise<T>;
+export type Options = {
   concurrency?: number;
   timeout?: number;
 }

@@ -1967,10 +1967,16 @@ __metadata:
   resolution: "@log-listener-plugin/monorepo@workspace:."
   dependencies:
     "@jest/globals": "npm:^29.7.0"
+    "@rollup/plugin-commonjs": "npm:^28.0.2"
+    "@rollup/plugin-node-resolve": "npm:^16.0.0"
+    "@rollup/plugin-typescript": "npm:^12.1.2"
     "@types/jest": "npm:^29.5.14"
     jest: "npm:^29.7.0"
     rimraf: "npm:^6.0.1"
+    rollup: "npm:^4.28.1"
+    rollup-plugin-dts: "npm:^6.1.1"
     ts-jest: "npm:^29.2.5"
+    tslib: "npm:^2.8.1"
     typescript: "npm:^5.7.2"
   languageName: unknown
   linkType: soft
@@ -2459,9 +2465,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/plugin-commonjs@npm:^28.0.1":
-  version: 28.0.1
-  resolution: "@rollup/plugin-commonjs@npm:28.0.1"
+"@rollup/plugin-commonjs@npm:^28.0.2":
+  version: 28.0.2
+  resolution: "@rollup/plugin-commonjs@npm:28.0.2"
   dependencies:
     "@rollup/pluginutils": "npm:^5.0.1"
     commondir: "npm:^1.0.1"
@@ -2475,13 +2481,13 @@ __metadata:
   peerDependenciesMeta:
     rollup:
       optional: true
-  checksum: 10c0/15d73306f539763a4b0d5723a0be9099b56d07118ff12b4c7f4c04b26e762076706e9f88a45f131d639ed9b7bd52e51facf93f2ca265b994172677b48ca705fe
+  checksum: 10c0/e90a443e63bfed567d5a4854960240d256818a0b3c69a45e95e196c40a755959406dabe4fbccb886eeb45d3445ddc8f966632563a7d590808be7eee8084384f1
   languageName: node
   linkType: hard
 
-"@rollup/plugin-node-resolve@npm:^15.3.0":
-  version: 15.3.0
-  resolution: "@rollup/plugin-node-resolve@npm:15.3.0"
+"@rollup/plugin-node-resolve@npm:^16.0.0":
+  version: 16.0.0
+  resolution: "@rollup/plugin-node-resolve@npm:16.0.0"
   dependencies:
     "@rollup/pluginutils": "npm:^5.0.1"
     "@types/resolve": "npm:1.20.2"
@@ -2493,13 +2499,13 @@ __metadata:
   peerDependenciesMeta:
     rollup:
       optional: true
-  checksum: 10c0/5f3b11f9f6d00fe9fd3fe1977cc71f6a99c2b13d0ee82ad6822c4c4ecfc98854791c5a505798762f7e2332d9d67568a561e89aa8268ed3b1668563be1845109e
+  checksum: 10c0/b63deb6fc14b37070ccaffacc8c10c9720f28ce7632f4fe2ee77064c0c79bcc3fe060fb77160e673c9fd847307252f25a2983030bd54f1888324063c69ae1399
   languageName: node
   linkType: hard
 
-"@rollup/plugin-typescript@npm:^12.1.1":
-  version: 12.1.1
-  resolution: "@rollup/plugin-typescript@npm:12.1.1"
+"@rollup/plugin-typescript@npm:^12.1.2":
+  version: 12.1.2
+  resolution: "@rollup/plugin-typescript@npm:12.1.2"
   dependencies:
     "@rollup/pluginutils": "npm:^5.1.0"
     resolve: "npm:^1.22.1"
@@ -2512,7 +2518,7 @@ __metadata:
       optional: true
     tslib:
       optional: true
-  checksum: 10c0/1418ed9dc784c09ae82c7a171f453c42e26c48b5c557147cfee0fc95857711a3a0250efc7937b65923a5171bfd35c8d33dff82fe561ed2578c6d575ac7a826ae
+  checksum: 10c0/f447e23371bb1815030446ada3f57608bc6665f8aa2cd7343c4aa18021790fa3ba4783146ea576fb650d6ec68876182d0bc789a05b1a9163c09b16c17efdf868
   languageName: node
   linkType: hard
 
@@ -2532,128 +2538,135 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@rollup/rollup-android-arm-eabi@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-android-arm-eabi@npm:4.28.0"
+"@rollup/rollup-android-arm-eabi@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-android-arm-eabi@npm:4.28.1"
   conditions: os=android & cpu=arm
   languageName: node
   linkType: hard
 
-"@rollup/rollup-android-arm64@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-android-arm64@npm:4.28.0"
+"@rollup/rollup-android-arm64@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-android-arm64@npm:4.28.1"
   conditions: os=android & cpu=arm64
   languageName: node
   linkType: hard
 
-"@rollup/rollup-darwin-arm64@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-darwin-arm64@npm:4.28.0"
+"@rollup/rollup-darwin-arm64@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-darwin-arm64@npm:4.28.1"
   conditions: os=darwin & cpu=arm64
   languageName: node
   linkType: hard
 
-"@rollup/rollup-darwin-x64@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-darwin-x64@npm:4.28.0"
+"@rollup/rollup-darwin-x64@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-darwin-x64@npm:4.28.1"
   conditions: os=darwin & cpu=x64
   languageName: node
   linkType: hard
 
-"@rollup/rollup-freebsd-arm64@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-freebsd-arm64@npm:4.28.0"
+"@rollup/rollup-freebsd-arm64@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-freebsd-arm64@npm:4.28.1"
   conditions: os=freebsd & cpu=arm64
   languageName: node
   linkType: hard
 
-"@rollup/rollup-freebsd-x64@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-freebsd-x64@npm:4.28.0"
+"@rollup/rollup-freebsd-x64@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-freebsd-x64@npm:4.28.1"
   conditions: os=freebsd & cpu=x64
   languageName: node
   linkType: hard
 
-"@rollup/rollup-linux-arm-gnueabihf@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-linux-arm-gnueabihf@npm:4.28.0"
+"@rollup/rollup-linux-arm-gnueabihf@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-linux-arm-gnueabihf@npm:4.28.1"
   conditions: os=linux & cpu=arm & libc=glibc
   languageName: node
   linkType: hard
 
-"@rollup/rollup-linux-arm-musleabihf@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-linux-arm-musleabihf@npm:4.28.0"
+"@rollup/rollup-linux-arm-musleabihf@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-linux-arm-musleabihf@npm:4.28.1"
   conditions: os=linux & cpu=arm & libc=musl
   languageName: node
   linkType: hard
 
-"@rollup/rollup-linux-arm64-gnu@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-linux-arm64-gnu@npm:4.28.0"
+"@rollup/rollup-linux-arm64-gnu@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-linux-arm64-gnu@npm:4.28.1"
   conditions: os=linux & cpu=arm64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@rollup/rollup-linux-arm64-musl@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-linux-arm64-musl@npm:4.28.0"
+"@rollup/rollup-linux-arm64-musl@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-linux-arm64-musl@npm:4.28.1"
   conditions: os=linux & cpu=arm64 & libc=musl
   languageName: node
   linkType: hard
 
-"@rollup/rollup-linux-powerpc64le-gnu@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-linux-powerpc64le-gnu@npm:4.28.0"
+"@rollup/rollup-linux-loongarch64-gnu@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-linux-loongarch64-gnu@npm:4.28.1"
+  conditions: os=linux & cpu=loong64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@rollup/rollup-linux-powerpc64le-gnu@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-linux-powerpc64le-gnu@npm:4.28.1"
   conditions: os=linux & cpu=ppc64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@rollup/rollup-linux-riscv64-gnu@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-linux-riscv64-gnu@npm:4.28.0"
+"@rollup/rollup-linux-riscv64-gnu@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-linux-riscv64-gnu@npm:4.28.1"
   conditions: os=linux & cpu=riscv64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@rollup/rollup-linux-s390x-gnu@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-linux-s390x-gnu@npm:4.28.0"
+"@rollup/rollup-linux-s390x-gnu@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-linux-s390x-gnu@npm:4.28.1"
   conditions: os=linux & cpu=s390x & libc=glibc
   languageName: node
   linkType: hard
 
-"@rollup/rollup-linux-x64-gnu@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-linux-x64-gnu@npm:4.28.0"
+"@rollup/rollup-linux-x64-gnu@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-linux-x64-gnu@npm:4.28.1"
   conditions: os=linux & cpu=x64 & libc=glibc
   languageName: node
   linkType: hard
 
-"@rollup/rollup-linux-x64-musl@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-linux-x64-musl@npm:4.28.0"
+"@rollup/rollup-linux-x64-musl@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-linux-x64-musl@npm:4.28.1"
   conditions: os=linux & cpu=x64 & libc=musl
   languageName: node
   linkType: hard
 
-"@rollup/rollup-win32-arm64-msvc@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-win32-arm64-msvc@npm:4.28.0"
+"@rollup/rollup-win32-arm64-msvc@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-win32-arm64-msvc@npm:4.28.1"
   conditions: os=win32 & cpu=arm64
   languageName: node
   linkType: hard
 
-"@rollup/rollup-win32-ia32-msvc@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-win32-ia32-msvc@npm:4.28.0"
+"@rollup/rollup-win32-ia32-msvc@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-win32-ia32-msvc@npm:4.28.1"
   conditions: os=win32 & cpu=ia32
   languageName: node
   linkType: hard
 
-"@rollup/rollup-win32-x64-msvc@npm:4.28.0":
-  version: 4.28.0
-  resolution: "@rollup/rollup-win32-x64-msvc@npm:4.28.0"
+"@rollup/rollup-win32-x64-msvc@npm:4.28.1":
+  version: 4.28.1
+  resolution: "@rollup/rollup-win32-x64-msvc@npm:4.28.1"
   conditions: os=win32 & cpu=x64
   languageName: node
   linkType: hard
@@ -3109,15 +3122,8 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@wutiange/log-listener-plugin@workspace:packages/log-listener-plugin"
   dependencies:
-    "@rollup/plugin-commonjs": "npm:^28.0.1"
-    "@rollup/plugin-node-resolve": "npm:^15.3.0"
-    "@rollup/plugin-typescript": "npm:^12.1.1"
     "@types/react-native-zeroconf": "npm:^0.13.1"
     "@types/url-parse": "npm:^1.4.11"
-    rollup: "npm:^4.28.0"
-    rollup-plugin-dts: "npm:^6.1.1"
-    tslib: "npm:^2.8.1"
-    typescript: "npm:^5.7.2"
     url-parse: "npm:^1.5.10"
   peerDependencies:
     "@react-native-async-storage/async-storage": "*"
@@ -8799,28 +8805,29 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rollup@npm:^4.28.0":
-  version: 4.28.0
-  resolution: "rollup@npm:4.28.0"
+"rollup@npm:^4.28.1":
+  version: 4.28.1
+  resolution: "rollup@npm:4.28.1"
   dependencies:
-    "@rollup/rollup-android-arm-eabi": "npm:4.28.0"
-    "@rollup/rollup-android-arm64": "npm:4.28.0"
-    "@rollup/rollup-darwin-arm64": "npm:4.28.0"
-    "@rollup/rollup-darwin-x64": "npm:4.28.0"
-    "@rollup/rollup-freebsd-arm64": "npm:4.28.0"
-    "@rollup/rollup-freebsd-x64": "npm:4.28.0"
-    "@rollup/rollup-linux-arm-gnueabihf": "npm:4.28.0"
-    "@rollup/rollup-linux-arm-musleabihf": "npm:4.28.0"
-    "@rollup/rollup-linux-arm64-gnu": "npm:4.28.0"
-    "@rollup/rollup-linux-arm64-musl": "npm:4.28.0"
-    "@rollup/rollup-linux-powerpc64le-gnu": "npm:4.28.0"
-    "@rollup/rollup-linux-riscv64-gnu": "npm:4.28.0"
-    "@rollup/rollup-linux-s390x-gnu": "npm:4.28.0"
-    "@rollup/rollup-linux-x64-gnu": "npm:4.28.0"
-    "@rollup/rollup-linux-x64-musl": "npm:4.28.0"
-    "@rollup/rollup-win32-arm64-msvc": "npm:4.28.0"
-    "@rollup/rollup-win32-ia32-msvc": "npm:4.28.0"
-    "@rollup/rollup-win32-x64-msvc": "npm:4.28.0"
+    "@rollup/rollup-android-arm-eabi": "npm:4.28.1"
+    "@rollup/rollup-android-arm64": "npm:4.28.1"
+    "@rollup/rollup-darwin-arm64": "npm:4.28.1"
+    "@rollup/rollup-darwin-x64": "npm:4.28.1"
+    "@rollup/rollup-freebsd-arm64": "npm:4.28.1"
+    "@rollup/rollup-freebsd-x64": "npm:4.28.1"
+    "@rollup/rollup-linux-arm-gnueabihf": "npm:4.28.1"
+    "@rollup/rollup-linux-arm-musleabihf": "npm:4.28.1"
+    "@rollup/rollup-linux-arm64-gnu": "npm:4.28.1"
+    "@rollup/rollup-linux-arm64-musl": "npm:4.28.1"
+    "@rollup/rollup-linux-loongarch64-gnu": "npm:4.28.1"
+    "@rollup/rollup-linux-powerpc64le-gnu": "npm:4.28.1"
+    "@rollup/rollup-linux-riscv64-gnu": "npm:4.28.1"
+    "@rollup/rollup-linux-s390x-gnu": "npm:4.28.1"
+    "@rollup/rollup-linux-x64-gnu": "npm:4.28.1"
+    "@rollup/rollup-linux-x64-musl": "npm:4.28.1"
+    "@rollup/rollup-win32-arm64-msvc": "npm:4.28.1"
+    "@rollup/rollup-win32-ia32-msvc": "npm:4.28.1"
+    "@rollup/rollup-win32-x64-msvc": "npm:4.28.1"
     "@types/estree": "npm:1.0.6"
     fsevents: "npm:~2.3.2"
   dependenciesMeta:
@@ -8844,6 +8851,8 @@ __metadata:
       optional: true
     "@rollup/rollup-linux-arm64-musl":
       optional: true
+    "@rollup/rollup-linux-loongarch64-gnu":
+      optional: true
     "@rollup/rollup-linux-powerpc64le-gnu":
       optional: true
     "@rollup/rollup-linux-riscv64-gnu":
@@ -8864,7 +8873,7 @@ __metadata:
       optional: true
   bin:
     rollup: dist/bin/rollup
-  checksum: 10c0/98d3bc2b784eff71b997cfc2be97c00e2f100ee38adc2f8ada7b9b9ecbbc96937f667a6a247a45491807b3f2adef3c73d1f5df40d71771bff0c2d8c0cca9b369
+  checksum: 10c0/2d2d0433b7cb53153a04c7b406f342f31517608dc57510e49177941b9e68c30071674b83a0292ef1d87184e5f7c6d0f2945c8b3c74963074de10c75366fe2c14
   languageName: node
   linkType: hard
 

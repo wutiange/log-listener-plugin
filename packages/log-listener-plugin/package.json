@@ -28,15 +28,8 @@
     "clean": "rimraf dist"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^28.0.1",
-    "@rollup/plugin-node-resolve": "^15.3.0",
-    "@rollup/plugin-typescript": "^12.1.1",
     "@types/react-native-zeroconf": "^0.13.1",
-    "@types/url-parse": "^1.4.11",
-    "rollup": "^4.28.0",
-    "rollup-plugin-dts": "^6.1.1",
-    "tslib": "^2.8.1",
-    "typescript": "^5.7.2"
+    "@types/url-parse": "^1.4.11"
   },
   "peerDependencies": {
     "@react-native-async-storage/async-storage": "*",
