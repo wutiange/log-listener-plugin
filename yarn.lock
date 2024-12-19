@@ -1966,7 +1966,9 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@log-listener-plugin/monorepo@workspace:."
   dependencies:
+    jest: "npm:^29.7.0"
     rimraf: "npm:^6.0.1"
+    ts-jest: "npm:^29.2.5"
     typescript: "npm:^5.7.2"
   languageName: unknown
   linkType: soft
@@ -9582,7 +9584,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^29.1.2":
+"ts-jest@npm:^29.1.2, ts-jest@npm:^29.2.5":
   version: 29.2.5
   resolution: "ts-jest@npm:29.2.5"
   dependencies:

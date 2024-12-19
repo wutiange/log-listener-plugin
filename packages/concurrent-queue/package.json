@@ -1,4 +1,14 @@
 {
-  "name": "concurrent-queue",
-  "packageManager": "yarn@4.5.3"
+  "name": "@wutiange/concurrent-queue",
+  "version": "0.0.1",
+  "source": "index.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "packageManager": "yarn@4.5.3",
+  "scripts": {
+    "test": "jest",
+    "build": "yarn clean && yarn test && rollup -c",
+    "dev": "rollup -c -w",
+    "clean": "rimraf dist"
+  }
 }

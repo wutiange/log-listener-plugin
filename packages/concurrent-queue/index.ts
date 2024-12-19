@@ -45,9 +45,9 @@ class ConcurrentQueue {
       const [func, resolve, reject,...args] = this.queue.shift()!;
       this.runningQueue++;
       Promise.race([
-        func(...args),
+        func(...args).then(resolve, reject),
         timeout(this.timeout),
-      ]).then(resolve, reject).finally(() => {
+      ]).catch(reject).finally(() => {
         this.runningQueue--;
         this.processQueue();
       });

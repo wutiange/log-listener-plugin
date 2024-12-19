@@ -6,7 +6,8 @@
     "log:clean": "yarn workspace @wutiange/log-listener-plugin clean",
     "example:android": "yarn workspace example android",
     "example:ios": "yarn workspace example ios",
-    "example:start": "yarn workspace example start"
+    "example:start": "yarn workspace example start",
+    "test": "jest"
   },
   "workspaces": {
     "packages": [
@@ -16,7 +17,9 @@
   "private": true,
   "packageManager": "yarn@4.5.3",
   "devDependencies": {
+    "jest": "^29.7.0",
     "rimraf": "^6.0.1",
+    "ts-jest": "^29.2.5",
     "typescript": "^5.7.2"
   }
 }
