@@ -24,18 +24,12 @@ export function hasPort(url: string) {
     return false;
   }
 
-  try {
-    // 使用 URL 构造函数解析 URL
-    const parsedUrl = new URL(url);
+  // 使用 URL 构造函数解析 URL
+  const parsedUrl = new URL(url);
 
-    // 检查 port 属性是否为空
-    // 注意：如果使用默认端口（如 HTTP 的 80 或 HTTPS 的 443），port 会是空字符串
-    return parsedUrl.port !== '';
-  } catch (error) {
-    logger.error(error);
-    // 如果 URL 无效，捕获错误并返回 false
-    return false;
-  }
+  // 检查 port 属性是否为空
+  // 注意：如果使用默认端口（如 HTTP 的 80 或 HTTPS 的 443），port 会是空字符串
+  return parsedUrl.port !== '';
 }
 
 export function formDataToString(formData: FormData): string {
@@ -63,7 +57,7 @@ export function typeReplacer(key: string, val: any) {
     return val.toString();
   } else if (val instanceof Function) {
     return Function.prototype.toString.call(val);
-  } else if (val instanceof Symbol) {
+  } else if (typeof val === 'symbol') {
     return val.toString();
   } else if (typeof val === 'bigint') {
     return val.toString();
