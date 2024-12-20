@@ -1,7 +1,7 @@
 import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
 import BlobFileReader from 'react-native/Libraries/Blob/FileReader';
-import {Blob} from 'buffer';
-import { createClassWithErrorHandling, formDataToString } from './utils';
+import { Blob } from 'buffer';
+import { formDataToString } from './utils';
 import logger from './logger';
 
 type StartNetworkLoggingOptions = {
@@ -87,7 +87,7 @@ const getResponseBody = async (responseType: string, response: any) => {
     }
     return response ?? null;
   } catch (error) {
-    logger.warn("getResponseBody---error---", error)
+    logger.warn('getResponseBody---error---', error);
     return null;
   }
 };
@@ -153,7 +153,7 @@ class HTTPInterceptor {
           await listener(data);
         }
       } catch (error: any) {
-        console.warn(`eventName=${eventName}, error=${error?.message}`)
+        console.warn(`eventName=${eventName}, error=${error?.message}`);
       }
     });
   };
@@ -171,7 +171,7 @@ class HTTPInterceptor {
 
     if (this.ignoredPatterns) {
       if (
-        this.ignoredPatterns.some(pattern => pattern.test(`${method} ${url}`))
+        this.ignoredPatterns.some((pattern) => pattern.test(`${method} ${url}`))
       ) {
         return;
       }
@@ -258,10 +258,7 @@ class HTTPInterceptor {
 
   setIgnoredUrls = (ignoredUrls: string[]) => {
     if (ignoredUrls?.length) {
-      if (
-        !Array.isArray(ignoredUrls) ||
-        typeof ignoredUrls[0] !== 'string'
-      ) {
+      if (!Array.isArray(ignoredUrls) || typeof ignoredUrls[0] !== 'string') {
         console.warn(
           'ignoredUrls must be an array of strings. The logger has not been started.',
         );
@@ -269,7 +266,7 @@ class HTTPInterceptor {
       }
       this.ignoredUrls = new Set(ignoredUrls);
     }
-  }
+  };
 
   enable = (options?: StartNetworkLoggingOptions) => {
     try {
@@ -301,7 +298,7 @@ class HTTPInterceptor {
       if (options?.ignoredPatterns) {
         this.ignoredPatterns = options.ignoredPatterns;
       }
-      this.setIgnoredUrls(options?.ignoredUrls ?? [])
+      this.setIgnoredUrls(options?.ignoredUrls ?? []);
       XHRInterceptor.setOpenCallback(this.openHandle);
       XHRInterceptor.setRequestHeaderCallback(this.requestHeaderHandle);
       XHRInterceptor.setHeaderReceivedCallback(this.headerReceivedHandle);
@@ -330,8 +327,7 @@ class HTTPInterceptor {
   };
 }
 
-const SafeHTTPInterceptor = createClassWithErrorHandling(HTTPInterceptor)
-const httpInterceptor = new SafeHTTPInterceptor();
+const httpInterceptor = new HTTPInterceptor();
 export {
   type StartNetworkLoggingOptions,
   httpInterceptor,

@@ -1,5 +1,4 @@
 import Server from './Server';
-import { createClassWithErrorHandling } from './utils';
 import { httpInterceptor } from './HTTPInterceptor';
 import {
   DEFAULT_TIMEOUT,
@@ -232,7 +231,5 @@ class LogPlugin {
     this._log(Level.ERROR, Tag.DEFAULT, ...data);
   };
 }
-const SafeLogPlugin = createClassWithErrorHandling(LogPlugin);
-const logPlugin = new SafeLogPlugin();
-export { SafeLogPlugin };
+const logPlugin = new LogPlugin();
 export default logPlugin;

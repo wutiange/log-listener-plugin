@@ -38,63 +38,6 @@ export function hasPort(url: string) {
   }
 }
 
-type Constructor<T = {}> = new (...args: any[]) => T;
-
-export function createClassWithErrorHandling<T extends Constructor>(
-  BaseClass: T,
-): T {
-  return new Proxy(BaseClass, {
-    construct(target: T, args: any[]): object {
-      const instance = new target(...args);
-      return new Proxy(instance, {
-        get(target: any, prop: string | symbol): any {
-          const value = target[prop];
-          if (typeof value === 'function') {
-            return function (this: any, ...args: any[]): any {
-              try {
-                const result = value.apply(this, args);
-                if (result instanceof Promise) {
-                  return result.catch((error: Error) => {
-                    logger.error(`Error in ${String(prop)}:`, error);
-                    throw error; // 重新抛出错误，以便调用者可以捕获它
-                  });
-                }
-                return result;
-              } catch (error) {
-                logger.error(`Error in ${String(prop)}:`, error);
-                throw error; // 重新抛出错误，以便调用者可以捕获它
-              }
-            };
-          }
-          return value;
-        },
-        set(target: any, prop: string | symbol, value: any): boolean {
-          if (typeof value === 'function') {
-            target[prop] = function (this: any, ...args: any[]): any {
-              try {
-                const result = value.apply(this, args);
-                if (result instanceof Promise) {
-                  return result.catch((error: Error) => {
-                    logger.error(`Error in ${String(prop)}:`, error);
-                    throw error;
-                  });
-                }
-                return result;
-              } catch (error) {
-                logger.error(`Error in ${String(prop)}:`, error);
-                throw error;
-              }
-            };
-          } else {
-            target[prop] = value;
-          }
-          return true;
-        },
-      });
-    },
-  });
-}
-
 export function formDataToString(formData: FormData): string {
   const boundary =
     '----WebKitFormBoundary' + Math.random().toString(36).substr(2);
