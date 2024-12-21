@@ -1,8 +1,9 @@
+const baseConfig = require('../../jest.config.js');
 const packageJson = require('./package.json');
 
 module.exports = {
+  ...baseConfig,
   displayName: packageJson.name,
-  testEnvironment: 'node',
   testMatch: ['<rootDir>/**/*.test.{ts,tsx,js,jsx}'],
   transform: {
     '^.+\\.tsx?$': 'ts-jest',

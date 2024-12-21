@@ -24,75 +24,12 @@ export function hasPort(url: string) {
     return false;
   }
 
-  try {
-    // 使用 URL 构造函数解析 URL
-    const parsedUrl = new URL(url);
+  // 使用 URL 构造函数解析 URL
+  const parsedUrl = new URL(url);
 
-    // 检查 port 属性是否为空
-    // 注意：如果使用默认端口（如 HTTP 的 80 或 HTTPS 的 443），port 会是空字符串
-    return parsedUrl.port !== '';
-  } catch (error) {
-    logger.error(error);
-    // 如果 URL 无效，捕获错误并返回 false
-    return false;
-  }
-}
-
-type Constructor<T = {}> = new (...args: any[]) => T;
-
-export function createClassWithErrorHandling<T extends Constructor>(
-  BaseClass: T,
-): T {
-  return new Proxy(BaseClass, {
-    construct(target: T, args: any[]): object {
-      const instance = new target(...args);
-      return new Proxy(instance, {
-        get(target: any, prop: string | symbol): any {
-          const value = target[prop];
-          if (typeof value === 'function') {
-            return function (this: any, ...args: any[]): any {
-              try {
-                const result = value.apply(this, args);
-                if (result instanceof Promise) {
-                  return result.catch((error: Error) => {
-                    logger.error(`Error in ${String(prop)}:`, error);
-                    throw error; // 重新抛出错误，以便调用者可以捕获它
-                  });
-                }
-                return result;
-              } catch (error) {
-                logger.error(`Error in ${String(prop)}:`, error);
-                throw error; // 重新抛出错误，以便调用者可以捕获它
-              }
-            };
-          }
-          return value;
-        },
-        set(target: any, prop: string | symbol, value: any): boolean {
-          if (typeof value === 'function') {
-            target[prop] = function (this: any, ...args: any[]): any {
-              try {
-                const result = value.apply(this, args);
-                if (result instanceof Promise) {
-                  return result.catch((error: Error) => {
-                    logger.error(`Error in ${String(prop)}:`, error);
-                    throw error;
-                  });
-                }
-                return result;
-              } catch (error) {
-                logger.error(`Error in ${String(prop)}:`, error);
-                throw error;
-              }
-            };
-          } else {
-            target[prop] = value;
-          }
-          return true;
-        },
-      });
-    },
-  });
+  // 检查 port 属性是否为空
+  // 注意：如果使用默认端口（如 HTTP 的 80 或 HTTPS 的 443），port 会是空字符串
+  return parsedUrl.port !== '';
 }
 
 export function formDataToString(formData: FormData): string {
@@ -120,7 +57,7 @@ export function typeReplacer(key: string, val: any) {
     return val.toString();
   } else if (val instanceof Function) {
     return Function.prototype.toString.call(val);
-  } else if (val instanceof Symbol) {
+  } else if (typeof val === 'symbol') {
     return val.toString();
   } else if (typeof val === 'bigint') {
     return val.toString();

@@ -5,7 +5,9 @@
     "ios": "yarn workspace example ios",
     "start": "yarn workspace example start",
     "test": "yarn workspaces foreach -Aptv --exclude example run test",
-    "build": "yarn workspaces foreach -Aptv --exclude example run build"
+    "build": "yarn workspaces foreach -Aptv --exclude example run build",
+    "log:test": "yarn workspace @wutiange/log-listener-plugin test",
+    "concurrent:test": "yarn workspace @wutiange/concurrent-queue test"
   },
   "workspaces": {
     "packages": [

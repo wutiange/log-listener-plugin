@@ -7,7 +7,6 @@ jest.mock('buffer', () => ({
   Blob: jest.fn(),
 }));
 jest.mock('../utils', () => ({
-  createClassWithErrorHandling: jest.fn(Class => Class),
   formDataToString: jest.fn(),
 }));
 
@@ -28,7 +27,7 @@ class MockFormData {
 
 class MockBlob {
   private content: string;
-  type: any
+  type: any;
   constructor(parts: any, options: any = {}) {
     this.content = parts ? parts.join('') : '';
     this.type = options.type || '';
@@ -165,127 +164,166 @@ describe('HTTPInterceptor', () => {
 
     beforeEach(() => {
       httpInterceptor.enable();
-      openCallback = (XHRInterceptor.setOpenCallback as jest.Mock).mock.calls[0][0];
-      requestHeaderCallback = (XHRInterceptor.setRequestHeaderCallback as jest.Mock).mock.calls[0][0];
-      headerReceivedCallback = (XHRInterceptor.setHeaderReceivedCallback as jest.Mock).mock.calls[0][0];
-      sendCallback = (XHRInterceptor.setSendCallback as jest.Mock).mock.calls[0][0];
-      responseCallback = (XHRInterceptor.setResponseCallback as jest.Mock).mock.calls[0][0];
+      openCallback = (XHRInterceptor.setOpenCallback as jest.Mock).mock
+        .calls[0][0];
+      requestHeaderCallback = (
+        XHRInterceptor.setRequestHeaderCallback as jest.Mock
+      ).mock.calls[0][0];
+      headerReceivedCallback = (
+        XHRInterceptor.setHeaderReceivedCallback as jest.Mock
+      ).mock.calls[0][0];
+      sendCallback = (XHRInterceptor.setSendCallback as jest.Mock).mock
+        .calls[0][0];
+      responseCallback = (XHRInterceptor.setResponseCallback as jest.Mock).mock
+        .calls[0][0];
     });
 
     it('should handle open event', () => {
       const listener = jest.fn();
       httpInterceptor.addListener('open', listener);
-      const xhr = {}
+      const xhr = {};
       openCallback('GET', 'https://example.com', xhr);
-      expect(listener).toHaveBeenCalledWith(expect.objectContaining({
-        method: 'GET',
-        url: 'https://example.com',
-      }));
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          method: 'GET',
+          url: 'https://example.com',
+        }),
+      );
     });
 
     it('should handle request header event', () => {
       const listener = jest.fn();
       httpInterceptor.addListener('requestHeader', listener);
-      const xhr = {}
+      const xhr = {};
       openCallback('GET', 'https://example.com', xhr);
       requestHeaderCallback('Content-Type', 'application/json', xhr);
-      expect(listener).toHaveBeenCalledWith(expect.objectContaining({
-        requestHeaders: { 'Content-Type': 'application/json' },
-      }));
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          requestHeaders: { 'Content-Type': 'application/json' },
+        }),
+      );
     });
 
     it('should handle header received event', () => {
       const listener = jest.fn();
       httpInterceptor.addListener('headerReceived', listener);
-      const xhr: {[key in string]: any} = {}
+      const xhr: { [key in string]: any } = {};
       openCallback('GET', 'https://example.com', xhr);
-      xhr.responseHeaders = { 'Content-Type': 'application/json' }
+      xhr.responseHeaders = { 'Content-Type': 'application/json' };
       headerReceivedCallback('application/json', 100, {}, xhr);
-      expect(listener).toHaveBeenCalledWith(expect.objectContaining({
-        responseContentType: 'application/json',
-        responseSize: 100,
-        responseHeaders: { 'Content-Type': 'application/json' },
-      }));
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          responseContentType: 'application/json',
+          responseSize: 100,
+          responseHeaders: { 'Content-Type': 'application/json' },
+        }),
+      );
     });
 
     it('should handle send event with JSON data', () => {
       const listener = jest.fn();
       httpInterceptor.addListener('send', listener);
-      const xhr = {}
+      const xhr = {};
       openCallback('POST', 'https://example.com', xhr);
       sendCallback(JSON.stringify({ key: 'value' }), xhr);
-      expect(listener).toHaveBeenCalledWith(expect.objectContaining({
-        requestData: { key: 'value' },
-      }));
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          requestData: { key: 'value' },
+        }),
+      );
     });
 
     it('should handle send event with FormData', () => {
       const listener = jest.fn();
       httpInterceptor.addListener('send', listener);
-      const xhr = {}
+      const xhr = {};
       openCallback('POST', 'https://example.com', xhr);
       const formData = new FormData();
       formData.append('key', 'value');
       (formDataToString as jest.Mock).mockReturnValue('key=value');
       sendCallback(formData, xhr);
-      expect(listener).toHaveBeenCalledWith(expect.objectContaining({
-        requestData: 'key=value',
-      }));
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          requestData: 'key=value',
+        }),
+      );
     });
 
     it('should handle response event', async () => {
       const listener = jest.fn();
       httpInterceptor.addListener('response', listener);
-      const xhr = {}
+      const xhr = {};
       openCallback('GET', 'https://example.com', xhr);
-      await responseCallback(200, 1000, { data: 'response' }, 'https://example.com', 'json', xhr);
-      expect(listener).toHaveBeenCalledWith(expect.objectContaining({
-        status: 200,
-        timeout: 1000,
-        responseData: { data: 'response' },
-        responseURL: 'https://example.com',
-        responseType: 'json',
-      }));
+      await responseCallback(
+        200,
+        1000,
+        { data: 'response' },
+        'https://example.com',
+        'json',
+        xhr,
+      );
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          status: 200,
+          timeout: 1000,
+          responseData: { data: 'response' },
+          responseURL: 'https://example.com',
+          responseType: 'json',
+        }),
+      );
     });
 
     it('should handle response event with blob data', async () => {
       const listener = jest.fn();
       httpInterceptor.addListener('response', listener);
-      const xhr = {}
+      const xhr = {};
       openCallback('GET', 'https://example.com', xhr);
       const mockBlob = new MockBlob(['blob content']);
-      await responseCallback(200, 1000, mockBlob, 'https://example.com', 'blob', xhr);
-      expect(listener).toHaveBeenCalledWith(expect.objectContaining({
-        responseData: 'blob content',
-      }));
+      await responseCallback(
+        200,
+        1000,
+        mockBlob,
+        'https://example.com',
+        'blob',
+        xhr,
+      );
+      expect(listener).toHaveBeenCalledWith(
+        expect.objectContaining({
+          responseData: 'blob content',
+        }),
+      );
     });
   });
 
   describe('error handling', () => {
     beforeEach(() => {
       httpInterceptor.enable();
-    })
+    });
     it('should handle errors in listeners', async () => {
       const errorListener = jest.fn(() => {
         throw new Error('Listener error');
       });
       httpInterceptor.addListener('open', errorListener);
       console.warn = jest.fn();
-      const xhr = {}
-      const openCallback = (XHRInterceptor.setOpenCallback as jest.Mock).mock.calls[0][0];
+      const xhr = {};
+      const openCallback = (XHRInterceptor.setOpenCallback as jest.Mock).mock
+        .calls[0][0];
       openCallback('GET', 'https://example.com', xhr);
-      
-      expect(console.warn).toHaveBeenCalledWith(expect.stringContaining('Listener error'));
+
+      expect(console.warn).toHaveBeenCalledWith(
+        expect.stringContaining('Listener error'),
+      );
     });
   });
 
   describe('ignored requests', () => {
     it('should ignore requests to ignored hosts', () => {
       httpInterceptor.enable({ ignoredHosts: ['ignored.com'] });
-      const openCallback = (XHRInterceptor.setOpenCallback as jest.Mock).mock.calls[0][0];
+      const openCallback = (XHRInterceptor.setOpenCallback as jest.Mock).mock
+        .calls[0][0];
       const listener = jest.fn();
       httpInterceptor.addListener('open', listener);
-      
+
       openCallback('GET', 'https://ignored.com', { uniqueId: '123' });
       expect(listener).not.toHaveBeenCalled();
 
@@ -295,10 +333,11 @@ describe('HTTPInterceptor', () => {
 
     it('should ignore requests to ignored URLs', () => {
       httpInterceptor.enable({ ignoredUrls: ['https://example.com/ignored'] });
-      const openCallback = (XHRInterceptor.setOpenCallback as jest.Mock).mock.calls[0][0];
+      const openCallback = (XHRInterceptor.setOpenCallback as jest.Mock).mock
+        .calls[0][0];
       const listener = jest.fn();
       httpInterceptor.addListener('open', listener);
-      
+
       openCallback('GET', 'https://example.com/ignored', { uniqueId: '123' });
       expect(listener).not.toHaveBeenCalled();
 
@@ -308,10 +347,11 @@ describe('HTTPInterceptor', () => {
 
     it('should ignore requests matching ignored patterns', () => {
       httpInterceptor.enable({ ignoredPatterns: [/^GET https:\/\/test\.com/] });
-      const openCallback = (XHRInterceptor.setOpenCallback as jest.Mock).mock.calls[0][0];
+      const openCallback = (XHRInterceptor.setOpenCallback as jest.Mock).mock
+        .calls[0][0];
       const listener = jest.fn();
       httpInterceptor.addListener('open', listener);
-      
+
       openCallback('GET', 'https://test.com/api', { uniqueId: '123' });
       expect(listener).not.toHaveBeenCalled();
 
