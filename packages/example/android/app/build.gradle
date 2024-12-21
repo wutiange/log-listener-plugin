@@ -93,12 +93,12 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
-        release {
-            storeFile file('D:\\Learns\\Android\\learn.jks')
-            storePassword 'learn'
-            keyAlias 'learn'
-            keyPassword '123456'
-        }
+//        release {
+//            storeFile file('D:\\Learns\\Android\\learn.jks')
+//            storePassword 'learn'
+//            keyAlias 'learn'
+//            keyPassword '123456'
+//        }
     }
     buildTypes {
         debug {
