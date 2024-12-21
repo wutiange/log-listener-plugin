@@ -1,14 +1,14 @@
-import { fileURLToPath } from "url";
-import typescript from "@rollup/plugin-typescript";
-import nodeResolve from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
-import dts from "rollup-plugin-dts";
-import { dirname, resolve } from "path";
+import { fileURLToPath } from 'url';
+import typescript from '@rollup/plugin-typescript';
+import nodeResolve from '@rollup/plugin-node-resolve';
+import commonjs from '@rollup/plugin-commonjs';
+import dts from 'rollup-plugin-dts';
+import { dirname, resolve } from 'path';
 
 // 正确获取 __dirname 的替代方案
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const input = "index.ts";
+const input = 'index.ts';
 
 export function createConfig(pkg, options = {}) {
   return [
@@ -17,7 +17,7 @@ export function createConfig(pkg, options = {}) {
       input,
       output: {
         file: pkg.types,
-        format: "es",
+        format: 'es',
       },
       plugins: [dts()],
     },
@@ -27,24 +27,26 @@ export function createConfig(pkg, options = {}) {
       output: [
         {
           file: pkg.main,
-          format: "cjs",
+          format: 'cjs',
           sourcemap: true,
         },
         {
           file: pkg.module,
-          format: "es",
+          format: 'es',
           sourcemap: true,
         },
       ],
       plugins: [
         typescript({
-          tsconfig: resolve(__dirname, "./tsconfig.json"),
+          tsconfig: resolve(__dirname, './tsconfig.json'),
           declaration: false,
           compilerOptions: {
-            outDir: "dist",
-          }
+            outDir: 'dist',
+          },
         }),
-        nodeResolve(),
+        nodeResolve({
+          extensions: ['.ts', '.js'],
+        }),
         commonjs(),
       ],
       ...options,
