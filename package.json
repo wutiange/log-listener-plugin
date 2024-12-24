@@ -17,6 +17,8 @@
   "private": true,
   "packageManager": "yarn@4.5.3",
   "devDependencies": {
+    "@commitlint/cli": "^19.6.1",
+    "@commitlint/config-angular": "^19.6.0",
     "@jest/globals": "^29.7.0",
     "@rollup/plugin-commonjs": "^28.0.2",
     "@rollup/plugin-node-resolve": "^16.0.0",
