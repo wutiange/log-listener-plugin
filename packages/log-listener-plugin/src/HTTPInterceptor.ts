@@ -257,15 +257,16 @@ class HTTPInterceptor {
   };
 
   setIgnoredUrls = (ignoredUrls: string[]) => {
-    if (ignoredUrls?.length) {
-      if (!Array.isArray(ignoredUrls) || typeof ignoredUrls[0] !== 'string') {
-        console.warn(
-          'ignoredUrls must be an array of strings. The logger has not been started.',
-        );
-        return;
-      }
-      this.ignoredUrls = new Set(ignoredUrls);
+    if (
+      !Array.isArray(ignoredUrls) ||
+      (ignoredUrls[0] && typeof ignoredUrls[0] !== 'string')
+    ) {
+      console.warn(
+        'ignoredUrls must be an array of strings. The logger has not been started.',
+      );
+      return;
     }
+    this.ignoredUrls = new Set(ignoredUrls);
   };
 
   enable = (options?: StartNetworkLoggingOptions) => {
