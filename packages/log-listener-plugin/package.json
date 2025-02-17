@@ -22,10 +22,10 @@
   "scripts": {
     "publish-alpha": "npm publish --access public --tag alpha",
     "prepublishOnly": "npm run build",
-    "test": "jest",
-    "build": "yarn clean && yarn test && rollup -c",
-    "dev": "rollup -c -w",
-    "clean": "rimraf dist"
+    "test": "yarn dlx jest",
+    "build": "yarn clean && yarn test && yarn dlx rollup -c",
+    "dev": "yarn dlx rollup -c -w",
+    "clean": "yarn dlx rimraf dist"
   },
   "devDependencies": {
     "@types/react-native-zeroconf": "^0.13.1",

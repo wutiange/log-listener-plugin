@@ -8,8 +8,8 @@
   "packageManager": "yarn@4.5.3",
   "scripts": {
     "test": "jest",
-    "build": "yarn clean && yarn test && rollup -c",
-    "dev": "rollup -c -w",
-    "clean": "rimraf dist"
+    "build": "yarn clean && yarn test && yarn dlx rollup -c",
+    "dev": "yarn dlx rollup -c -w",
+    "clean": "yarn dlx rimraf dist"
   }
 }
