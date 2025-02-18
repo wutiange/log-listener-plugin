@@ -60,7 +60,7 @@ class Server {
         try {
           const { path, token } = service.txt ?? {};
           const url = `http://${service.host}:${service.port}`;
-          if (!(path && token) || this.baseUrlArr.has(url)) {
+          if (!(path && token)) {
             return;
           }
           if (!(await this.requestJoin(`${url}${path}`, token))) {
@@ -80,8 +80,14 @@ class Server {
         if (currentUrl === undefined) {
           return;
         }
-        this.baseUrlArr.delete(currentUrl);
+        const isExistSomeUrl = Array.from(this.urlsObj.values()).some(
+          (url) => url === currentUrl,
+        );
         this.urlsObj.delete(name);
+        if (isExistSomeUrl) {
+          return;
+        }
+        this.baseUrlArr.delete(currentUrl);
         if (this.urlsListener) {
           this.urlsListener(this.baseUrlArr);
         }
@@ -147,8 +153,14 @@ class Server {
       if (!currentUrl) {
         return;
       }
-      this.baseUrlArr.delete(currentUrl);
+      const isExistSomeUrl = Array.from(this.urlsObj.values()).some(
+        (url) => url === currentUrl,
+      );
       this.urlsObj.delete('Default');
+      if (isExistSomeUrl) {
+        return;
+      }
+      this.baseUrlArr.delete(currentUrl);
     } else if (!hasPort(tempUrl)) {
       this.updateUrl(`${tempUrl}:${DEFAULT_PORT}`);
     } else {
