@@ -22,11 +22,6 @@ const config = {
     path.resolve(__dirname, '../../node_modules'),
     path.resolve(__dirname, '../log-listener-plugin'),
   ],
-  resolver: {
-    extraNodeModules: {
-      '@wutiange/log-listener-plugin': path.resolve(__dirname, '../log-listener-plugin'),
-    },
-  },
 };
 
 module.exports = mergeConfig(getDefaultConfig(__dirname), config);
