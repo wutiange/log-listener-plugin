@@ -5,4 +5,9 @@ const packageJson = JSON.parse(
   readFileSync(new URL('./package.json', import.meta.url)),
 );
 
-export default createConfig(packageJson);
+export default createConfig(packageJson, {
+  external: [
+    'react-native/Libraries/Network/XHRInterceptor',
+    'react-native/Libraries/Blob/FileReader',
+  ],
+});

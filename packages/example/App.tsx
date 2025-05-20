@@ -1,41 +1,59 @@
 import React from 'react';
-import {Button, SafeAreaView, StyleSheet} from 'react-native';
+import {Button, StyleSheet, View} from 'react-native';
 import CustomError from './CustomError';
 import axios from 'axios';
 
 const App = () => {
   const onPressLog = () => {
     console.log(
-      '数字', 1,
-      '字符串', '字符串',
-      '对象', {
+      '数字',
+      1,
+      '字符串',
+      '字符串',
+      '对象',
+      {
         a: 1,
         b: 2,
         c: 3,
       },
-      '数组', [1, 2, 3],
-      '函数', () => {
+      '数组',
+      [1, 2, 3],
+      '函数',
+      () => {
         console.log('函数');
       },
-      '错误', new Error('错误'),
-      'Symbol', Symbol('Symbol'),
-      'undefined', undefined,
-      'null', null,
-      'NaN', NaN,
-      'Infinity', Infinity,
-      'BigInt', BigInt(1),
-      'Date', new Date(),
-      'RegExp', /\w+/,
-      'Promise', new Promise((resolve, reject) => {
+      '错误',
+      new Error('错误'),
+      'Symbol',
+      Symbol('Symbol'),
+      'undefined',
+      undefined,
+      'null',
+      null,
+      'NaN',
+      NaN,
+      'Infinity',
+      Infinity,
+      'BigInt',
+      BigInt(1),
+      'Date',
+      new Date(),
+      'RegExp',
+      /\w+/,
+      'Promise',
+      new Promise(resolve => {
         resolve(1);
       }),
-      'Map', new Map([
+      'Map',
+      new Map([
         ['a', 1],
         ['b', 2],
         ['c', 3],
       ]),
-      'Set', new Set([new Set([0, 6, 12]), 2, 3]),
-      'WeakMap', new WeakMap([
+      'Set',
+      new Set([new Set([0, 6, 12]), 2, 3]),
+      'WeakMap',
+      new WeakMap([
         [{}, 1],
         [{}, 2],
         [{}, 3],
@@ -72,7 +90,7 @@ const App = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <Button title="测试 console.log" onPress={onPressLog} />
       <Button title="测试 console.warn" onPress={onPressWarn} />
       <Button title="测试 console.error" onPress={onPressError} />
@@ -93,13 +111,14 @@ const App = () => {
             .catch(err => console.log(err, '----======'));
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    marginTop: 100,
   },
 });
 

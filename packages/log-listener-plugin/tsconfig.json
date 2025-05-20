@@ -4,9 +4,5 @@
     "outDir": "./dist",
     "baseUrl": "."
   },
-  "include": [
-    "src",
-    "index.ts",
-    "react-native-extensions.d.ts"
-  ]
+  "include": ["*.ts", "src/**/*.ts", "react-native-extensions.d.ts"]
 }
