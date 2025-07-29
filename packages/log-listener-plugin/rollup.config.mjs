@@ -7,7 +7,11 @@ const packageJson = JSON.parse(
 
 export default createConfig(packageJson, {
   external: [
-    'react-native/Libraries/Network/XHRInterceptor',
     'react-native/Libraries/Blob/FileReader',
+    'react-native/Libraries/Utilities/createPerformanceLogger',
+    'react-native/Libraries/vendor/emitter/EventEmitter',
+    'react-native/Libraries/Blob/BlobManager',
+    'react-native/Libraries/Utilities/GlobalPerformanceLogger',
+    'react-native/Libraries/Network/RCTNetworking',
   ],
 });

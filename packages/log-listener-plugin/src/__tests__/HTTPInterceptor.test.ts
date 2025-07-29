@@ -1,5 +1,5 @@
 import { httpInterceptor } from '../HTTPInterceptor';
-import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
+import XHRInterceptor from '../XHRInterceptor';
 import { formDataToString } from '../utils';
 
 // Mock dependencies

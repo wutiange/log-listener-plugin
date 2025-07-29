@@ -1,4 +1,4 @@
-import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
+import XHRInterceptor from './XHRInterceptor';
 import BlobFileReader from 'react-native/Libraries/Blob/FileReader';
 import { Blob } from 'buffer';
 import { formDataToString } from './utils';
@@ -41,12 +41,12 @@ interface HttpRequestInfo {
   responseType: string;
 }
 
-type RequestMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
+type RequestMethod = string;
 
 type XHR = {
   uniqueId: string;
   responseHeaders?: Headers;
-};
+} & XMLHttpRequest;
 
 type EventName =
   | 'open'
@@ -159,6 +159,7 @@ class HTTPInterceptor {
   };
 
   private openHandle = (method: RequestMethod, url: string, xhr: XHR) => {
+    console.log('openHandle', method, url, xhr);
     if (this.ignoredHosts) {
       const host = extractHost(url);
       if (host && this.ignoredHosts.has(host)) {
@@ -300,11 +301,13 @@ class HTTPInterceptor {
         this.ignoredPatterns = options.ignoredPatterns;
       }
       this.setIgnoredUrls(options?.ignoredUrls ?? []);
-      XHRInterceptor.setOpenCallback(this.openHandle);
-      XHRInterceptor.setRequestHeaderCallback(this.requestHeaderHandle);
-      XHRInterceptor.setHeaderReceivedCallback(this.headerReceivedHandle);
-      XHRInterceptor.setSendCallback(this.sendHandle);
-      XHRInterceptor.setResponseCallback(this.responseHandle);
+      XHRInterceptor.setOpenCallback(this.openHandle as any);
+      XHRInterceptor.setRequestHeaderCallback(this.requestHeaderHandle as any);
+      XHRInterceptor.setHeaderReceivedCallback(
+        this.headerReceivedHandle as any,
+      );
+      XHRInterceptor.setSendCallback(this.sendHandle as any);
+      XHRInterceptor.setResponseCallback(this.responseHandle as any);
       XHRInterceptor.enableInterception();
       this.enabled = true;
     } catch (error) {}

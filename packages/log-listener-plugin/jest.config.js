@@ -10,10 +10,9 @@ module.exports = {
   ],
   moduleNameMapper: {
     '^react-native$': '<rootDir>/__mocks__/react-native',
-    '^react-native/Libraries/Network/XHRInterceptor$':
-      '<rootDir>/__mocks__/react-native/Libraries/Network/XHRInterceptor.js',
     '^react-native/Libraries/Blob/FileReader$':
       '<rootDir>/__mocks__/react-native/Libraries/Blob/FileReader.js',
+    XHRInterceptor: '<rootDir>/src/__mocks__/XHRInterceptor.js',
   },
   roots: ['<rootDir>/src'],
 };

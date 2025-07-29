@@ -28,6 +28,7 @@
     "clean": "yarn dlx rimraf dist"
   },
   "devDependencies": {
+    "@types/invariant": "^2",
     "@types/react": "^19",
     "@types/react-native-zeroconf": "^0.13.1",
     "@types/url-parse": "^1.4.11",
@@ -49,6 +50,9 @@
     "index.ts"
   ],
   "dependencies": {
+    "base64-js": "^1.5.1",
+    "event-target-shim": "^5.0.1",
+    "invariant": "^2.2.4",
     "url-parse": "^1.5.10"
   },
   "packageManager": "yarn@4.5.3"
