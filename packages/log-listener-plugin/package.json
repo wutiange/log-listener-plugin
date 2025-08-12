@@ -28,17 +28,13 @@
     "clean": "yarn dlx rimraf dist"
   },
   "devDependencies": {
-    "@types/react": "^19",
     "@types/react-native-zeroconf": "^0.13.1",
     "@types/url-parse": "^1.4.11",
     "react": "18.3.1",
     "react-native": "0.76.3"
   },
   "peerDependencies": {
-    "@react-native-async-storage/async-storage": "*",
-    "react-native": "*",
-    "react-native-device-info": "^14.0.0",
-    "react-native-zeroconf": "^0.13.8"
+    "react-native": "*"
   },
   "files": [
     "package.json",
