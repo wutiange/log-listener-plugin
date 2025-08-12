@@ -1,4 +1,4 @@
-import XHRInterceptor from 'react-native/Libraries/Network/XHRInterceptor';
+import XHRInterceptor from './XHRInterceptor';
 import BlobFileReader from 'react-native/Libraries/Blob/FileReader';
 import { Blob } from 'buffer';
 import { formDataToString } from './utils';
