@@ -10,7 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
-      contents: read
+      contents: write
     env:
       WORKSPACE_PKG: packages/log-listener-plugin
       PACKAGE_NAME: '@wutiange/log-listener-plugin'
@@ -54,6 +54,7 @@ jobs:
         run: yarn workspace ${{ env.PACKAGE_NAME }} build
 
       - name: Publish (OIDC, with retry and auto-bump)
+        id: publish
         shell: bash
         run: |
           set -euo pipefail
@@ -64,6 +65,8 @@ jobs:
             echo "Publish attempt #$attempt"
             if npm publish --provenance --access public; then
               echo "Publish succeeded"
+              PVER=$(node -p "require('./package.json').version")
+              echo "published_version=${PVER}" >> $GITHUB_OUTPUT
               exit 0
             fi
             echo "Publish failed. Checking if due to version conflict..."
@@ -83,4 +86,24 @@ jobs:
           done
           echo "Exceeded maximum publish attempts" >&2
           exit 1
+
+      - name: Create and push git tag
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.publish.outputs.published_version }}"
+          if [ -z "${VERSION}" ]; then
+            echo "No published_version output; skipping tag" >&2
+            exit 0
+          fi
+          git fetch --tags
+          if git rev-parse -q --verify "refs/tags/v${VERSION}" >/dev/null; then
+            echo "Tag v${VERSION} already exists; skipping"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${VERSION}" -m "Release v${VERSION}"
+          git push origin "v${VERSION}"
 
