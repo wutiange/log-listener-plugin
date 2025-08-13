@@ -10,7 +10,6 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     permissions:
-      id-token: write
       contents: write
     env:
       WORKSPACE_PKG: packages/log-listener-plugin
@@ -54,8 +53,10 @@ jobs:
       - name: Build package (after finalizing version)
         run: yarn workspace ${{ env.PACKAGE_NAME }} build
 
-      - name: Publish (OIDC, with retry and auto-bump)
+      - name: Publish (token, with retry and auto-bump)
         id: publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         shell: bash
         run: |
           set -euo pipefail
@@ -64,7 +65,7 @@ jobs:
           attempt=1
           while [ $attempt -le $max_attempts ]; do
             echo "Publish attempt #$attempt"
-            if npm publish --provenance --access public; then
+            if npm publish --access public; then
               echo "Publish succeeded"
               PVER=$(node -p "require('./package.json').version")
               echo "published_version=${PVER}" >> $GITHUB_OUTPUT
