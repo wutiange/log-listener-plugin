@@ -1,0 +1,109 @@
+name: Publish @wutiange/log-listener-plugin to npm
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: write
+    env:
+      WORKSPACE_PKG: packages/log-listener-plugin
+      PACKAGE_NAME: '@wutiange/log-listener-plugin'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Enable Corepack (Yarn Berry)
+        run: |
+          corepack enable
+          corepack prepare yarn@4.5.3 --activate || true
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Resolve and bump version if needed
+        id: resolve_version
+        shell: bash
+        run: |
+          set -euo pipefail
+          PKG_DIR="${WORKSPACE_PKG}"
+          LOCAL_VER=$(node -p "require('./${PKG_DIR}/package.json').version")
+          echo "Local version: ${LOCAL_VER}"
+          PUBLISHED_VER=$(npm view ${PACKAGE_NAME} version || echo '')
+          echo "Published version: ${PUBLISHED_VER}"
+          if [ "${PUBLISHED_VER}" = "${LOCAL_VER}" ]; then
+            echo "Version conflict detected, bumping last segment..."
+            node -e "const fs=require('fs'),path=require('path');const pkgPath=path.join(process.env.WORKSPACE_PKG,'package.json');const pkg=JSON.parse(fs.readFileSync(pkgPath,'utf8'));const v=pkg.version.trim();function bumpLastSegment(version){const m=version.match(/^(.*?)(\\d+)(\\s*)$/);if(m){const head=m[1];const num=parseInt(m[2],10)+1;return head+String(num)+(m[3]||'');}const parts=version.split('-')[0].split('.');if(parts.length>=3){parts[2]=String(parseInt(parts[2],10)+1);return parts.join('.');}return version;}pkg.version=bumpLastSegment(v);fs.writeFileSync(pkgPath,JSON.stringify(pkg,null,2)+'\\n');console.log('Bumped version to',pkg.version);"
+          fi
+
+          NEW_VER=$(node -p "require('./${PKG_DIR}/package.json').version")
+          echo "version=${NEW_VER}" >> $GITHUB_OUTPUT
+
+      - name: Build package (after finalizing version)
+        run: yarn workspace ${{ env.PACKAGE_NAME }} build
+
+      - name: Publish (OIDC, with retry and auto-bump)
+        id: publish
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd "${WORKSPACE_PKG}"
+          max_attempts=5
+          attempt=1
+          while [ $attempt -le $max_attempts ]; do
+            echo "Publish attempt #$attempt"
+            if npm publish --provenance --access public; then
+              echo "Publish succeeded"
+              PVER=$(node -p "require('./package.json').version")
+              echo "published_version=${PVER}" >> $GITHUB_OUTPUT
+              exit 0
+            fi
+            echo "Publish failed. Checking if due to version conflict..."
+            if npm view "${PACKAGE_NAME}" version >/dev/null 2>&1; then
+              echo "Bumping last segment and retrying..."
+              node -e "const fs=require('fs'),path=require('path');const pkgPath=path.join(process.cwd(),'package.json');const pkg=JSON.parse(fs.readFileSync(pkgPath,'utf8'));const v=pkg.version.trim();function bumpLastSegment(version){const m=version.match(/^(.*?)(\\d+)(\\s*)$/);if(m){const head=m[1];const num=parseInt(m[2],10)+1;return head+String(num)+(m[3]||'');}const parts=version.split('-')[0].split('.');if(parts.length>=3){parts[2]=String(parseInt(parts[2],10)+1);return parts.join('.');}return version;}pkg.version=bumpLastSegment(v);fs.writeFileSync(pkgPath,JSON.stringify(pkg,null,2)+'\\n');console.log('Bumped version to',pkg.version);"
+              # Rebuild after bump to ensure artifacts match the new version
+              echo "Rebuilding after version bump..."
+              pushd ../.. >/dev/null
+              yarn workspace "${PACKAGE_NAME}" build
+              popd >/dev/null
+            else
+              echo "npm view failed; not a version conflict, aborting." >&2
+              exit 1
+            fi
+            attempt=$((attempt+1))
+          done
+          echo "Exceeded maximum publish attempts" >&2
+          exit 1
+
+      - name: Create and push git tag
+        if: success()
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="${{ steps.publish.outputs.published_version }}"
+          if [ -z "${VERSION}" ]; then
+            echo "No published_version output; skipping tag" >&2
+            exit 0
+          fi
+          git fetch --tags
+          if git rev-parse -q --verify "refs/tags/v${VERSION}" >/dev/null; then
+            echo "Tag v${VERSION} already exists; skipping"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "v${VERSION}" -m "Release v${VERSION}"
+          git push origin "v${VERSION}"
+

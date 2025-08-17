@@ -70,7 +70,7 @@ const App = () => {
   };
 
   const onPressFetchGet = async () => {
-    const url = 'https://httpstat.us/200';
+    const url = 'https://httpbin.org/get';
     await fetch(url, {
       headers: {
         ['Content-Type']: 'application/json',
@@ -83,7 +83,7 @@ const App = () => {
   };
 
   const onPressAxiosGet = async () => {
-    const url = 'https://httpstat.us/200';
+    const url = 'https://httpbin.org/anything';
     axios.get(url).then(res => {
       console.log(res);
     });
