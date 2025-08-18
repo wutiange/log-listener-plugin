@@ -1,6 +1,7 @@
 import { hasPort, sleep, typeReplacer } from './utils';
 import { getBaseData, LOG_KEY } from './common';
 import logger from './logger';
+import { stringify } from 'flatted';
 
 const DEFAULT_PORT = 27751;
 class Server {
@@ -114,16 +115,17 @@ class Server {
     data: Record<string, any>,
   ): Promise<void> => {
     const request = async (url: string, _data: Record<string, any>) => {
+      const body = stringify(
+        { ...this.innerBaseData, ...this.baseData, ..._data },
+        typeReplacer,
+      )
       await Promise.race([
         fetch(`${url}/${path}`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json;charset=utf-8',
+            'Content-Type': 'text/plain;charset=utf-8',
           },
-          body: JSON.stringify(
-            { ...this.innerBaseData, ...this.baseData, ..._data },
-            typeReplacer,
-          ),
+          body,
         }),
         sleep(this.timeout, true),
       ]);

@@ -159,7 +159,6 @@ class HTTPInterceptor {
   };
 
   private openHandle = (method: RequestMethod, url: string, xhr: XHR) => {
-    console.log('openHandle', method, url, xhr);
     if (this.ignoredHosts) {
       const host = extractHost(url);
       if (host && this.ignoredHosts.has(host)) {

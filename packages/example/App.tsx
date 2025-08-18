@@ -1,6 +1,5 @@
 import React from 'react';
 import {Button, StyleSheet, View} from 'react-native';
-import CustomError from './CustomError';
 import axios from 'axios';
 
 const App = () => {
@@ -89,13 +88,26 @@ const App = () => {
     });
   };
 
+  const onPressViewLog = () => {
+    console.log(View);
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} ref={ref => {
+      // console.log(stringify(ref));
+      // console.log(ref);
+
+
+      setTimeout(() => {
+        console.log(ref);
+      }, 5000);
+    }}>
       <Button title="测试 console.log" onPress={onPressLog} />
       <Button title="测试 console.warn" onPress={onPressWarn} />
       <Button title="测试 console.error" onPress={onPressError} />
       <Button title="测试 fetch get" onPress={onPressFetchGet} />
       <Button title="测试 axios get" onPress={onPressAxiosGet} />
+      <Button title="测试 View 标签的打印" onPress={onPressViewLog} />
       <Button
         title="测试 自己"
         onPress={() => {

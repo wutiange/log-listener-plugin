@@ -47,6 +47,7 @@
   "dependencies": {
     "base64-js": "^1.5.1",
     "event-target-shim": "^5.0.1",
+    "flatted": "^3.3.3",
     "invariant": "^2.2.4",
     "url-parse": "^1.5.10"
   },
